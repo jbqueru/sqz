@@ -18,14 +18,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 echo '(*) create output directories'
-mkdir -p out/bin || echo $?
-mkdir -p out/gfx || echo $?
-mkdir -p out/tos || echo $?
+mkdir -p out/bin || exit $?
+mkdir -p out/gfx || exit $?
+mkdir -p out/tos || exit $?
 
 echo '(*) build Squeezer tool'
-gcc sqz.c -O2 -Wall -Wextra -o out/bin/sqz || echo $?
+gcc sqz.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
 
 echo '(*) run Squeezer tool'
-out/bin/sqz
+out/bin/sqz || exit $?
 
 echo '(*) BUILD SUCCESSFUL'
