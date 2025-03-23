@@ -17,14 +17,17 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 long* read_pi1();
+long* encode_huffman(long* source);
 
 int main(int /* argc */, char** /* argv */) {
 	long* pixels = read_pi1();
+	encode_huffman(pixels);
 	free(pixels);
 	return 0;
 }
@@ -48,4 +51,24 @@ long* read_pi1() {
 	}
 	free(rawbits);
 	return pixels;
+}
+
+long* encode_huffman(long* source) {
+	long mn = LONG_MAX, mx = LONG_MIN;
+	for (int i = 0; i < 64000; i++) {
+		if (source[i] < mn) mn = source[i];
+		if (source[i] > mx) mx = source[i];
+	}
+	printf("min %ld max %ld\n", mn, mx);
+	long* counts = malloc((mx - mn + 1) * sizeof(long));
+	for (long i = 0; i <= mx - mn; i++) {
+		counts[mn + i] = 0;
+	}
+	for (int i = 0; i < 64000; i++) {
+		counts[source[i]]++;
+	}
+	for (long i = 0; i <= mx - mn; i++) {
+		printf("value %ld count %ld\n", mn + i, counts[mn + i]);
+	}
+	return NULL;
 }
