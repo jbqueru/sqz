@@ -17,6 +17,10 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+#define SS(x) SSS(x)
+#define SSS(x) #x
+#define FL __FILE__ ":" SS(__LINE__) ": "
+
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,18 +30,52 @@ long* read_pi1();
 long* encode_huffman(long* source);
 
 int main(int /* argc */, char** /* argv */) {
-	long* pixels = read_pi1();
+	long* pixels = NULL;
+	pixels = read_pi1();
+	if (!pixels) {
+		fprintf(stderr, FL "Couldn't read pixels\n");
+	}
 	encode_huffman(pixels);
 	free(pixels);
 	return 0;
 }
 
 long* read_pi1() {
-	char* rawbits = malloc(32000);
-	long* pixels = malloc(64000 * sizeof(long));
-	FILE* infile = fopen("out/tos/MBVMAX.PI1", "rb");
-	fseek(infile, SEEK_SET, 34);
-	fread(rawbits, 1, 32000, infile);
+	char* rawbits = NULL;
+	long* pixels = NULL;
+	FILE* file = NULL;
+
+	rawbits = malloc(32000);
+	if (!rawbits) {
+		fprintf(stderr, FL "Couldn't allocate memory for raw PI1 bits.\n");
+		exit(1);
+	}
+
+	file = fopen("out/tos/MBVMAX.PI1", "rb");
+	if (!file) {
+		fprintf(stderr, FL "Couldn't open file for reading.\n");
+		exit(1);
+	}
+	if (fseek(file, 34, SEEK_SET)) {
+		fprintf(stderr, FL "Couldn't seek to pixel data in input file.\n");
+		exit(1);
+	}
+	if (fread(rawbits, 1, 32000, file) < 32000) {
+		fprintf(stderr, FL "Couldn't read pixel data from input file.\n");
+		exit(1);
+	}
+	if (fclose(file)) {
+		fprintf(stderr, FL "Couldn't close input file.\n");
+		exit(1);
+	}
+	file = NULL;
+
+	pixels = malloc(64000 * sizeof(long));
+	if (!pixels) {
+		fprintf(stderr, FL "Couldn't allocate memory for decoded pixels.\n");
+		exit(1);
+	}
+
 	for (int y = 0; y < 200; y++) {
 		for (int x = 0; x < 320; x++) {
 			long c = 0;
@@ -49,7 +87,10 @@ long* read_pi1() {
 			pixels[x + 320 * y] = c;
 		}
 	}
+
 	free(rawbits);
+	rawbits = NULL;
+
 	return pixels;
 }
 
