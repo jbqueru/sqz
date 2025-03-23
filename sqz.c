@@ -187,7 +187,11 @@ long* encode_huffman(long* source) {
 		for (long j = i; tree[j].parent != LONG_MAX; j = tree[j].parent) {
 			n++;
 		}
-		for (long j = i; tree[j].parent != LONG_MAX; j = tree[j].parent) {
+		for (long d = n - 1; d >= 0; d--) {
+			long j = i;
+			for (long dd = 0; dd < d; dd++) {
+				j = tree[j].parent;
+			}
 			if (tree[tree[j].parent].child0 == j) {
 				printf("0");
 			} else {
