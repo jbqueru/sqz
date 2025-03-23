@@ -212,8 +212,13 @@ long* encode_huffman(long* source) {
 			}
 		}
 		printf(" (length %ld)\n", symbols[tree[i].value - mn].bits);
-
 	}
+
+	long tot = 0;
+	for (long i = 0; i < nz; i++) {
+		tot += symbols[tree[i].value - mn].bits * symbols[tree[i].value - mn].count;
+	}
+	printf("%ld total bits of Huffman codes (%ld bytes)\n", tot, (tot + 7) / 8);
 
 	return NULL;
 }
