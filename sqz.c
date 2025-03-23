@@ -61,14 +61,31 @@ long* encode_huffman(long* source) {
 	}
 	printf("min %ld max %ld\n", mn, mx);
 	long* counts = malloc((mx - mn + 1) * sizeof(long));
+	long* values = malloc((mx - mn + 1) * sizeof(long));
 	for (long i = 0; i <= mx - mn; i++) {
 		counts[mn + i] = 0;
+		values[mn + i] = i;
 	}
 	for (int i = 0; i < 64000; i++) {
 		counts[source[i]]++;
 	}
 	for (long i = 0; i <= mx - mn; i++) {
-		printf("value %ld count %ld\n", mn + i, counts[mn + i]);
+		printf("before sorting: value %ld count %ld\n", values[mn + i], counts[mn + i]);
+	}
+	for (int n = 0; n < mx - mn; n++) {
+		for (int i = 0; i < mx - mn; i++) {
+			if (counts[i] < counts[i + 1]) {
+				long t = counts[i + 1];
+				counts[i + 1] = counts[i];
+				counts[i] = t;
+				t = values[i + 1];
+				values[i + 1] = values[i];
+				values[i] = t;
+			}
+		}
+	}
+	for (long i = 0; i <= mx - mn; i++) {
+		printf("after sorting: value %ld count %ld\n", values[mn + i], counts[mn + i]);
 	}
 	return NULL;
 }
