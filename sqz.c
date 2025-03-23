@@ -91,6 +91,12 @@ long* read_pi1() {
 	return pixels;
 }
 
+struct huffsymbol {
+	long count;
+	long bits;
+	long code;
+};
+
 struct hufftree {
 	long value;
 	long count;
@@ -110,20 +116,20 @@ long* encode_huffman(long* source) {
 	printf("min %ld max %ld\n", mn, mx);
 
 	// Gather counts of symbols
-	long* rawcounts = malloc((mx - mn + 1) * sizeof(long));
-	memset(rawcounts, 0, (mx - mn + 1) * sizeof(long));
+	struct huffsymbol* symbols = malloc((mx - mn + 1) * sizeof(struct huffsymbol));
+	memset(symbols, 0, (mx - mn + 1) * sizeof(struct huffsymbol));
 
 	for (long i = 0; i < 64000; i++) {
-		rawcounts[source[i] - mn]++;
+		symbols[source[i] - mn].count++;
 	}
 	for (long i = 0; i <= mx - mn; i++) {
-		printf("raw counts: value %ld count %ld\n", mn + i, rawcounts[i]);
+		printf("raw counts: value %ld count %ld\n", mn + i, symbols[i].count);
 	}
 
 	// Count unique symbols
 	long nz = 0;
 	for (long i = 0; i <= mx - mn; i++) {
-		if (rawcounts[i] > 0) {
+		if (symbols[i].count > 0) {
 			nz++;
 		}
 	}
@@ -139,9 +145,9 @@ long* encode_huffman(long* source) {
 	}
 	long j = 0;
 	for (long i = 0; i <= mx - mn; i++) {
-		if (rawcounts[i] != 0) {
+		if (symbols[i].count != 0) {
 			tree[j].value = i + mn;
-			tree[j].count = rawcounts[i];
+			tree[j].count = symbols[i].count;
 			j++;
 		}
 	}
@@ -183,25 +189,28 @@ long* encode_huffman(long* source) {
 		printf(" count %ld\n", tree[i].count);
 	}
 
-	// Display Huffman codes
+	// Compute Huffman codes
+	for (long i = 0; i < nz; i++) {
+		for (long j = i; tree[j].parent != LONG_MAX; j = tree[j].parent) {
+			if (tree[tree[j].parent].child1 == j) {
+				symbols[tree[i].value - mn].code |= (1L << symbols[tree[i].value - mn].bits);
+			}
+			symbols[tree[i].value - mn].bits++;
+		}
+	}
+
+	// Print Huffman codes
 	for (long i = 0; i < nz; i++) {
 		printf("symbol %ld code ", tree[i].value);
-		long n = 0;
-		for (long j = i; tree[j].parent != LONG_MAX; j = tree[j].parent) {
-			n++;
-		}
-		for (long d = n - 1; d >= 0; d--) {
-			long j = i;
-			for (long dd = 0; dd < d; dd++) {
-				j = tree[j].parent;
-			}
-			if (tree[tree[j].parent].child0 == j) {
-				printf("0");
-			} else {
+		for (long j = symbols[tree[i].value - mn].bits - 1; j >= 0; j--) {
+			if (symbols[tree[i].value - mn].code & (1L << j)) {
 				printf("1");
+			} else {
+				printf("0");
 			}
 		}
-		printf(" (length %ld)\n", n);
+		printf(" (length %ld)\n", symbols[tree[i].value - mn].bits);
+
 	}
 
 	return NULL;
