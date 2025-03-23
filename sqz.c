@@ -32,9 +32,6 @@ long* encode_huffman(long* source);
 int main(int /* argc */, char** /* argv */) {
 	long* pixels = NULL;
 	pixels = read_pi1();
-	if (!pixels) {
-		fprintf(stderr, FL "Couldn't read pixels\n");
-	}
 	encode_huffman(pixels);
 	free(pixels);
 	return 0;
@@ -94,6 +91,14 @@ long* read_pi1() {
 	return pixels;
 }
 
+struct hufftree {
+	long value;
+	long count;
+	long child0;
+	long child1;
+	long parent;
+};
+
 long* encode_huffman(long* source) {
 
 	// Compute range of symbols. mn = minimum, mx = maximum.
@@ -118,29 +123,79 @@ long* encode_huffman(long* source) {
 	// Count unique symbols
 	long nz = 0;
 	for (long i = 0; i <= mx - mn; i++) {
-		if (rawcounts[i]) nz++;
+		if (rawcounts[i] > 0) {
+			nz++;
+		}
 	}
 	printf("%ld unique symbols\n", nz);
 
-	long* counts = rawcounts;
-	long* values = malloc((mx - mn + 1) * sizeof(long));
-	for (long i = 0; i <= mx - mn; i++) {
-		values[mn + i] = i;
+	// Prepare empty tree
+	struct hufftree* tree = malloc((2 * nz - 1) * sizeof(struct hufftree));
+
+	for (long i = 0; i < 2 * nz - 1; i++) {
+		tree[i].child0= LONG_MAX;
+		tree[i].child1 = LONG_MAX;
+		tree[i].parent = LONG_MAX;
 	}
-	for (long n = 0; n < mx - mn; n++) {
-		for (long i = 0; i < mx - mn; i++) {
-			if (counts[i] < counts[i + 1]) {
-				long t = counts[i + 1];
-				counts[i + 1] = counts[i];
-				counts[i] = t;
-				t = values[i + 1];
-				values[i + 1] = values[i];
-				values[i] = t;
-			}
+	long j = 0;
+	for (long i = 0; i <= mx - mn; i++) {
+		if (rawcounts[i] != 0) {
+			tree[j].value = i + mn;
+			tree[j].count = rawcounts[i];
+			j++;
 		}
 	}
-	for (long i = 0; i <= mx - mn; i++) {
-		printf("after sorting: value %ld count %ld\n", values[mn + i], counts[mn + i]);
+
+	// Huffman core algorithm
+	for (long i = nz ; i < 2 * nz - 1; i++) {
+		long mi1, mi2, mv1, mv2;
+		mi1 = mi2 = mv1 = mv2 = LONG_MAX;
+		for (long j = 0; j < i; j++) {
+			if (tree[j].parent != LONG_MAX) {
+				continue;
+			}
+			if (mv1 > tree[j].count) {
+				mv2 = mv1;
+				mi2 = mi1;
+				mv1 = tree[j].count;
+				mi1 = j;
+			} else if (mv2 > tree[j].count) {
+				mv2 = tree[j].count;
+				mi2 = j;
+			}
+		}
+		printf("min values %ld %ld at %ld %ld\n", mv1, mv2, mi1, mi2);
+		tree[i].child0 = mi1;
+		tree[i].child1 = mi2;
+		tree[i].count = mv1 + mv2;
+		tree[mi1].parent = i;
+		tree[mi2].parent = i;
 	}
+
+	for (long i = 0; i < 2 * nz - 1; i++) {
+		printf("node %ld", i);
+		if (tree[i].child0 == LONG_MAX) {
+			printf(" value %ld ", tree[i].value);
+		} else {
+			printf(" children %ld %ld", tree[i].child0, tree[i].child1);
+		}
+		printf(" count %ld\n", tree[i].count);
+	}
+	for (long i = 0; i < nz; i++) {
+		printf("symbol %ld code ", tree[i].value);
+		long n = 0;
+		for (long j = i; tree[j].parent != LONG_MAX; j = tree[j].parent) {
+			n++;
+		}
+		for (long j = i; tree[j].parent != LONG_MAX; j = tree[j].parent) {
+			if (tree[tree[j].parent].child0 == j) {
+				printf("0");
+			} else {
+				printf("1");
+			}
+		}
+		printf(" (length %ld)\n", n);
+	}
+
 	return NULL;
 }
