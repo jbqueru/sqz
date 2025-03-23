@@ -79,8 +79,8 @@ long* read_pi1() {
 		for (int x = 0; x < 320; x++) {
 			long c = 0;
 			for (int b = 0; b < 4; b++) {
-				if (rawbits[(x / 16) * 8 + (x / 8) + 160 * y + b * 2] & (0x80 >> (x % 8))) {
-					c += (1 << b);
+				if (rawbits[(x / 16) * 8 + (x % 16 / 8) + 160 * y + b * 2] & (0x80 >> (x % 8))) {
+					c |= (1L << b);
 				}
 			}
 			pixels[x + 320 * y] = c;
