@@ -172,15 +172,18 @@ long* encode_huffman(long* source) {
 		tree[mi2].parent = i;
 	}
 
+	// Display Huffman tree
 	for (long i = 0; i < 2 * nz - 1; i++) {
 		printf("node %ld", i);
 		if (tree[i].child0 == LONG_MAX) {
-			printf(" value %ld ", tree[i].value);
+			printf(" value %ld", tree[i].value);
 		} else {
 			printf(" children %ld %ld", tree[i].child0, tree[i].child1);
 		}
 		printf(" count %ld\n", tree[i].count);
 	}
+
+	// Display Huffman codes
 	for (long i = 0; i < nz; i++) {
 		printf("symbol %ld code ", tree[i].value);
 		long n = 0;
