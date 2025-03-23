@@ -47,6 +47,7 @@ long* read_pi1() {
 		fprintf(stderr, FL "Couldn't allocate memory for raw PI1 bits.\n");
 		exit(1);
 	}
+	memset(rawbits, 0, 32000);
 
 	file = fopen("out/tos/MBVMAX.PI1", "rb");
 	if (!file) {
@@ -72,6 +73,7 @@ long* read_pi1() {
 		fprintf(stderr, FL "Couldn't allocate memory for decoded pixels.\n");
 		exit(1);
 	}
+	memset(pixels, 0, 64000 * sizeof(long));
 
 	for (int y = 0; y < 200; y++) {
 		for (int x = 0; x < 320; x++) {
