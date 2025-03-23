@@ -54,26 +54,40 @@ long* read_pi1() {
 }
 
 long* encode_huffman(long* source) {
+
+	// Compute range of symbols. mn = minimum, mx = maximum.
 	long mn = LONG_MAX, mx = LONG_MIN;
-	for (int i = 0; i < 64000; i++) {
+	for (long i = 0; i < 64000; i++) {
 		if (source[i] < mn) mn = source[i];
 		if (source[i] > mx) mx = source[i];
 	}
 	printf("min %ld max %ld\n", mn, mx);
-	long* counts = malloc((mx - mn + 1) * sizeof(long));
+
+	// Gather counts of symbols
+	long* rawcounts = malloc((mx - mn + 1) * sizeof(long));
+	memset(rawcounts, 0, (mx - mn + 1) * sizeof(long));
+
+	for (long i = 0; i < 64000; i++) {
+		rawcounts[source[i] - mn]++;
+	}
+	for (long i = 0; i <= mx - mn; i++) {
+		printf("raw counts: value %ld count %ld\n", mn + i, rawcounts[i]);
+	}
+
+	// Count unique symbols
+	long nz = 0;
+	for (long i = 0; i <= mx - mn; i++) {
+		if (rawcounts[i]) nz++;
+	}
+	printf("%ld unique symbols\n", nz);
+
+	long* counts = rawcounts;
 	long* values = malloc((mx - mn + 1) * sizeof(long));
 	for (long i = 0; i <= mx - mn; i++) {
-		counts[mn + i] = 0;
 		values[mn + i] = i;
 	}
-	for (int i = 0; i < 64000; i++) {
-		counts[source[i]]++;
-	}
-	for (long i = 0; i <= mx - mn; i++) {
-		printf("before sorting: value %ld count %ld\n", values[mn + i], counts[mn + i]);
-	}
-	for (int n = 0; n < mx - mn; n++) {
-		for (int i = 0; i < mx - mn; i++) {
+	for (long n = 0; n < mx - mn; n++) {
+		for (long i = 0; i < mx - mn; i++) {
 			if (counts[i] < counts[i + 1]) {
 				long t = counts[i + 1];
 				counts[i + 1] = counts[i];
