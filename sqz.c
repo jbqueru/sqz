@@ -21,20 +21,103 @@
 #define SSS(x) #x
 #define FL __FILE__ ":" SS(__LINE__) ": "
 
+#define EXIT_SUCCESS 0
+#define EXIT_MEMORY 1
+#define EXIT_CMDLINE 2
+
+
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+char* inputfilename;
+char* outputfilename;
+
+void parse_command(int argc, char** argv);
+void display_version();
+void display_help();
+void display_license();
 long* read_pi1();
 long* encode_huffman(long* source, long ssize);
 
-int main(int /* argc */, char** /* argv */) {
+int main(int argc, char** argv) {
+	parse_command(argc, argv);
 	long* pixels = NULL;
 	pixels = read_pi1();
 	encode_huffman(pixels, 64000);
 	free(pixels);
-	return 0;
+	return EXIT_SUCCESS;
+}
+
+void parse_command(int argc, char** argv) {
+	inputfilename = NULL;
+	outputfilename = NULL;
+	for (int i = 1; i < argc; i++) {
+		if (!strcmp(argv[i], "--version")) {
+			if (i > 1 || argc > 2) {
+				fprintf(stderr, "--version can't be used with other options\n");
+				exit(EXIT_CMDLINE);
+			}
+			display_version();
+			exit(EXIT_SUCCESS);
+		}
+		if (!strcmp(argv[i], "--help")) {
+			if (i > 1 || argc > 2) {
+				fprintf(stderr, "--help can't be used with other options\n");
+				exit(EXIT_CMDLINE);
+			}
+			display_help();
+			exit(EXIT_SUCCESS);
+		}
+
+		if (inputfilename) {
+			fprintf(stderr, "Multiple input filenames found\n");
+			exit (EXIT_CMDLINE);
+		} else {
+			inputfilename = strdup(argv[i]);
+			if (!inputfilename) {
+				fprintf(stderr, FL"Could not allocate input filename\n");
+				exit(EXIT_MEMORY);
+			}
+		}
+	}
+	if (!inputfilename) {
+		fprintf(stderr, "No input filename spcified\n");
+		exit(EXIT_CMDLINE);
+	}
+}
+
+void display_version() {
+	printf("Squeezer version 0.0 (devel)\n");
+	printf("\n");
+	printf("A compression program for retrocomputing applications\n");
+	display_license();
+}
+
+void display_help() {
+	printf("Squeezer command-line options\n");
+	printf("--help: print this help message to stdout\n");
+	printf("--version: print version information to stdout\n");
+	printf("\n");
+	display_license();
+}
+
+void display_license() {
+	printf("Copyright 2025 Jean-Baptiste \"Djaybee\" \"JBQ\" Queru\n");
+	printf("\n");
+	printf("This program is free software: you can redistribute it and/or modify\n");
+	printf("it under the terms of the GNU Affero General Public License as\n");
+	printf("published by the Free Software Foundation, either version 3 of the\n");
+	printf("License, or (at your option) any later version.\n");
+	printf("\n");
+	printf("This program is distributed in the hope that it will be useful,\n");
+	printf("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+	printf("GNU Affero General Public License for more details.\n");
+	printf("\n");
+	printf("You should have received a copy of the GNU Affero General Public License\n");
+	printf("along with this program.  If not, see <https://www.gnu.org/licenses/>.\n");
 }
 
 long* read_pi1() {
