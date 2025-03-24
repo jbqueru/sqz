@@ -31,7 +31,21 @@ to optimal coding. They can also be useful when dealing
 with small amounts of source data, because their algorithmic
 nature saves the need for data-specific lookup tables.
 
-Some prefix-free binary codes worth mentioning, 
+It's worth noting that the efficiency of such codes is not
+affected by a shuffle of the source data, and therefore
+do not provide any savings for repetitionsin case the data
+is less random than a perfect shuffle.
+
+Finally, since non-trivial examples of such codes don't use
+the same bit count for all symbols, such that they tend to
+be inappropriate as inputs for later compression stages that
+won't find recognizable symbols to process, short of decoding
+the prefix-free code, which negates its purpose. In practice,
+that implies that most compression schemes will have a
+Huffman code as the last stage, while schemes without such
+a stage probably leave some easy gains unrealized.
+
+Some prefix-free binary codes worth mentioning:
 
 -Plain binary code, technically a prefix-free binary code,
 optimal with 2^n equally probable source symbols. Parametrized,
@@ -73,7 +87,7 @@ of those numbers with an extra 1 at the end.
 a finite number of symbols, which is known in advance. Requires
 to store a decoding tree, which can be large and is suitable for
 appropriate coding, optionally after being canonicalized is
-appropriate. 1962.
+appropriate. 1952.
 
 ## Lempel-Ziv compression
 
@@ -227,3 +241,54 @@ possibilities exist: delta encoding along multiple dimensions,
 as well as linearizing data in different orders: in rows,
 in columns, or along fractal space-filling curves (Hilbert,
 Lebesgue, Moore, Peano).
+
+## Thoughts on existing schemes
+
+### Deflate
+
+-recognizes that very long lengths and offsets might not
+be very useful, and limits them to 15 bits (though the
+format supports 16 bits, which is what differentiates
+deflate64).
+
+-recognizes that Huffman coding of exact offsets and lengths
+is counter-productive, because values tend to be unique:
+the costs in the decoding tree would outweigh the gains
+in the symbol stream, especially since that would rule out
+canonical Huffman trees. Instead, uses an encoding that is
+loosely related to Elias coding, though not universal,
+in the sense that there's some information about the number
+of bits, followed by an appropriate number of verbatim bits
+from the original symbol.
+
+-intertwines two sets of Huffman symbols along with other
+data (non-prefix free but whose length is known).
+
+### Bzip2
+
+-uses a nifty RLE trick as the first stage, where the indicator
+for an RLE sequence is a repetition of 4 copies of the same
+symbol: the next symbol is a length. That could be parametrized,
+where a shorter threshold increases the risk of runs that are
+exactly at the threshold and therefore need an unused length,
+while a larger threshold makes actual runs more expensive to
+store. Note: the author later recognized that this is not a
+useful stage.
+
+-uses BWT on blocks between 100kB and 900kB, probably to
+have a tunable compression parameter between 1 and 9 as
+a tradeoff between speed and ratio. Unlike deflate, though,
+that parameter has an impact on the compression format.
+
+-recognizes that 0 is such a common symbol after BWT + MTF
+that Huffman deviates too much from perfect entropy, and
+specifically encodes runs of zeroes before Huffman coding.
+
+-uses multiple Huffman code, switching between them with
+an MTF scheme and unary coding.
+
+-Huffman tables are stored in an optimized canonical form:
+a two-level bitmap keeps track of which symbols are actually
+used, and the rest of the canonical form is stored with deltas,
+using the fact that MTF tends to store distances in order from
+higher to lower frequency.
