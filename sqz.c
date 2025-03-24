@@ -27,12 +27,12 @@
 #include <string.h>
 
 long* read_pi1();
-long* encode_huffman(long* source);
+long* encode_huffman(long* source, long ssize);
 
 int main(int /* argc */, char** /* argv */) {
 	long* pixels = NULL;
 	pixels = read_pi1();
-	encode_huffman(pixels);
+	encode_huffman(pixels, 64000);
 	free(pixels);
 	return 0;
 }
@@ -107,11 +107,11 @@ struct hufftree {
 	long parent;
 };
 
-long* encode_huffman(long* source) {
+long* encode_huffman(long* source, long ssize) {
 
 	// Compute range of symbols. mn = minimum, mx = maximum.
 	long mn = LONG_MAX, mx = LONG_MIN;
-	for (long i = 0; i < 64000; i++) {
+	for (long i = 0; i < ssize; i++) {
 		if (source[i] < mn) mn = source[i];
 		if (source[i] > mx) mx = source[i];
 	}
@@ -121,7 +121,7 @@ long* encode_huffman(long* source) {
 	struct huffsymbol* symbols = malloc((mx - mn + 1) * sizeof(struct huffsymbol));
 	memset(symbols, 0, (mx - mn + 1) * sizeof(struct huffsymbol));
 
-	for (long i = 0; i < 64000; i++) {
+	for (long i = 0; i < ssize; i++) {
 		symbols[source[i] - mn].count++;
 	}
 	for (long i = 0; i <= mx - mn; i++) {
