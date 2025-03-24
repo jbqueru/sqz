@@ -42,7 +42,7 @@ const int VERB_NORMAL = 1;
 const int VERB_VERBOSE = 2;
 const int VERB_EXTRA = 3;
 
-void parse_command(int argc, char** argv);
+void parse_cmdline(int argc, char** argv);
 void display_version();
 void display_help();
 void display_license();
@@ -50,7 +50,7 @@ long* read_pi1();
 long* encode_huffman(long* source, long ssize);
 
 int main(int argc, char** argv) {
-	parse_command(argc, argv);
+	parse_cmdline(argc, argv);
 	long* pixels = NULL;
 	pixels = read_pi1();
 	encode_huffman(pixels, 64000);
@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
 	return EXIT_SUCCESS;
 }
 
-void parse_command(int argc, char** argv) {
+void parse_cmdline(int argc, char** argv) {
 	inputfilename = NULL;
 	outputfilename = NULL;
 	verbosity = VERB_NORMAL;
