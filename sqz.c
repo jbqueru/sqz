@@ -21,18 +21,26 @@
 #define SSS(x) #x
 #define FL __FILE__ ":" SS(__LINE__) ": "
 
-#define EXIT_SUCCESS 0
-#define EXIT_MEMORY 1
-#define EXIT_CMDLINE 2
-
+const int EXIT_SUCCESS = 0;
+const int EXIT_MEMORY = 1;
+const int EXIT_CMDLINE = 2;
+const int EXIT_INPUTFILE = 3;
+const int EXIT_OUTPUTFILE = 4;
 
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+/* from command-line */
 char* inputfilename;
 char* outputfilename;
+int verbosity;
+
+const int VERB_QUIET = 0;
+const int VERB_NORMAL = 1;
+const int VERB_VERBOSE = 2;
+const int VERB_EXTRA = 3;
 
 void parse_command(int argc, char** argv);
 void display_version();
@@ -53,6 +61,13 @@ int main(int argc, char** argv) {
 void parse_command(int argc, char** argv) {
 	inputfilename = NULL;
 	outputfilename = NULL;
+	verbosity = VERB_NORMAL;
+	if (argc == 1) {
+		display_version();
+		printf("\n");
+		display_help();
+		exit(EXIT_CMDLINE);
+	}
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "--version")) {
 			if (i > 1 || argc > 2) {
@@ -71,8 +86,25 @@ void parse_command(int argc, char** argv) {
 			exit(EXIT_SUCCESS);
 		}
 
+		if (!strcmp(argv[i], "--quiet")) {
+			verbosity = VERB_QUIET;
+			continue;
+		}
+		if (!strcmp(argv[i], "--verbose")) {
+			verbosity = VERB_VERBOSE;
+			continue;
+		}
+		if (!strcmp(argv[i], "--extraverbose")) {
+			verbosity = VERB_EXTRA;
+			continue;
+		}
+
+		if (argv[i][0] == '-') {
+			fprintf(stderr, "Unrecognized option %s\n", argv[i]);
+			exit (EXIT_CMDLINE);
+		}
 		if (inputfilename) {
-			fprintf(stderr, "Multiple input filenames found\n");
+			fprintf(stderr, "Multiple input filenames found: %s\n", argv[i]);
 			exit (EXIT_CMDLINE);
 		} else {
 			inputfilename = strdup(argv[i]);
@@ -86,21 +118,38 @@ void parse_command(int argc, char** argv) {
 		fprintf(stderr, "No input filename spcified\n");
 		exit(EXIT_CMDLINE);
 	}
+	if (verbosity >= VERB_NORMAL) {
+		display_license();
+		printf("\n");
+	}
+	if (verbosity >= VERB_EXTRA) {
+		printf("input filename : %s\n", inputfilename);
+	}
 }
 
 void display_version() {
 	printf("Squeezer version 0.0 (devel)\n");
 	printf("\n");
-	printf("A compression program for retrocomputing applications\n");
+	printf("A compression program for retrocomputing use cases\n");
+	printf("\n");
 	display_license();
 }
 
 void display_help() {
-	printf("Squeezer command-line options\n");
+	printf("Command-line options:\n");
 	printf("--help: print this help message to stdout\n");
 	printf("--version: print version information to stdout\n");
 	printf("\n");
-	display_license();
+	printf("--quiet: suppress all output\n");
+	printf("--verbose: additional output\n");
+	printf("--extraverbose: even more additional output\n");
+	printf("\n");
+	printf("Exit codes:\n");
+	printf("0: success\n");
+	printf("1: memory allocaton failure\n");
+	printf("2: invalid command line\n");
+	printf("3: I/O error on input file\n");
+	printf("4: I/O error on output file\n");
 }
 
 void display_license() {
@@ -128,33 +177,33 @@ long* read_pi1() {
 	rawbits = malloc(32000);
 	if (!rawbits) {
 		fprintf(stderr, FL "Couldn't allocate memory for raw PI1 bits.\n");
-		exit(1);
+		exit(EXIT_MEMORY);
 	}
 	memset(rawbits, 0, 32000);
 
-	file = fopen("out/tos/MBVMAX.PI1", "rb");
+	file = fopen(inputfilename, "rb");
 	if (!file) {
 		fprintf(stderr, FL "Couldn't open file for reading.\n");
-		exit(1);
+		exit(EXIT_INPUTFILE);
 	}
 	if (fseek(file, 34, SEEK_SET)) {
 		fprintf(stderr, FL "Couldn't seek to pixel data in input file.\n");
-		exit(1);
+		exit(EXIT_INPUTFILE);
 	}
 	if (fread(rawbits, 1, 32000, file) < 32000) {
 		fprintf(stderr, FL "Couldn't read pixel data from input file.\n");
-		exit(1);
+		exit(EXIT_INPUTFILE);
 	}
 	if (fclose(file)) {
 		fprintf(stderr, FL "Couldn't close input file.\n");
-		exit(1);
+		exit(EXIT_INPUTFILE);
 	}
 	file = NULL;
 
 	pixels = malloc(64000 * sizeof(long));
 	if (!pixels) {
 		fprintf(stderr, FL "Couldn't allocate memory for decoded pixels.\n");
-		exit(1);
+		exit(EXIT_MEMORY);
 	}
 	memset(pixels, 0, 64000 * sizeof(long));
 

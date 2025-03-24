@@ -26,6 +26,6 @@ echo '(*) build Squeezer tool'
 gcc sqz.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
 
 echo '(*) run Squeezer tool'
-out/bin/sqz || exit $?
+out/bin/sqz out/tos/VMAX.PI1 || exit $?
 
 echo '(*) BUILD SUCCESSFUL'
