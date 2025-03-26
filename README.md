@@ -292,3 +292,54 @@ a two-level bitmap keeps track of which symbols are actually
 used, and the rest of the canonical form is stored with deltas,
 using the fact that MTF tends to store distances in order from
 higher to lower frequency.
+
+# Design notes
+
+## Huffman
+
+### Minimum number of symbols
+
+-Huffman is useless with 2 input symbols.
+
+-Huffman with 3 symbols trivially amounts to a truncated
+binary encoder. It can be encoded through regular Huffman
+coding, but could also use an ad-hoc implementation (which
+would allow for a Huffman implementation which only handles
+4 or more symbols).
+
+-Huffman with 4 symbols is either a plain binary code, or
+a 1-2-3-3 tree. This is probably the bondary where ad-hoc
+implementations stop making sense. It's noteworthy that
+this amounts to 2bpp bitmaps, which is a very common bit
+depth.
+
+### Storing the Huffman decoding tree
+
+-A Huffman tree is a binary tree. For a tree representing
+N distinct symbols as used in the source, there are N-1
+decision nodes, each reprenting 1 bit of the input stream.
+
+-The straightforward approach stores a tree of N-1 nodes,
+where each node contains 2 references, which can either be
+another node or an explicit symbol.
+
+-It is also possible to consider 2N+1 nodes, where N leaf
+nodes each reference exactly one symbol and N-1 inner nodes
+each reference exactly 2 other nodes. That approach can open
+possibilities to store both types of nodes separately.
+
+-If we make the last inner node the root of the tree, which
+is natural during construction, inner nodes can reference
+either N-2 other inner nodes, or N symbols. That approach is
+potentially useful when N is of the form 2^k+1, which can
+happen e.g. with a BWT's termination symbol, or with a step
+involving bijective numeration.
+
+-The leaf nodes can be skipped entirely if the symbols are
+exactly integers in the range from 0 to N-1. If that range
+is offset (from A to A+N-1), the offset A can be stored as
+a separate entry. If the integers are sparse, they can be
+stored as a bitmap, or as hierarchical bitmaps (where the
+number of levels and the width of each chunk are parameters).
+
+### Canonical Huffman
