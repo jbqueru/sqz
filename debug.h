@@ -26,9 +26,9 @@
 
 extern int verbosity;
 
-#define VERB_QUIET 0
-#define VERB_NORMAL 1
-#define VERB_VERBOSE 2
-#define VERB_EXTRA 3
+extern const int VERB_QUIET;
+extern const int VERB_NORMAL;
+extern const int VERB_VERBOSE;
+extern const int VERB_EXTRA;
 
 #endif /* DEBUG_H_INCLUDED */

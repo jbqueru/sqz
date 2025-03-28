@@ -20,3 +20,8 @@
 #include "debug.h"
 
 int verbosity;
+
+const int VERB_QUIET = 0;
+const int VERB_NORMAL = 1;
+const int VERB_VERBOSE = 2;
+const int VERB_EXTRA = 3;
