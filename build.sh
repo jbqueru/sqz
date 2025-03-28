@@ -23,7 +23,7 @@ mkdir -p out/gfx || exit $?
 mkdir -p out/tos || exit $?
 
 echo '(*) build Squeezer tool'
-gcc sqz.c bitstream.c debug.c exitcodes.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
+gcc sqz.c bitstream.c cmdline.c debug.c exitcodes.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
 
 echo '(*) run Squeezer tool'
 out/bin/sqz out/tos/VMAX.PI1 || exit $?
