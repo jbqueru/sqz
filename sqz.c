@@ -17,15 +17,8 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#define SS(x) SSS(x)
-#define SSS(x) #x
-#define FL __FILE__ ":" SS(__LINE__) ": "
-
-const int EXIT_SUCCESS = 0;
-const int EXIT_MEMORY = 1;
-const int EXIT_CMDLINE = 2;
-const int EXIT_INPUTFILE = 3;
-const int EXIT_OUTPUTFILE = 4;
+#include "debug.h"
+#include "exitcodes.h"
 
 #include <limits.h>
 #include <stdio.h>
@@ -35,12 +28,6 @@ const int EXIT_OUTPUTFILE = 4;
 /* from command-line */
 char* inputfilename;
 char* outputfilename;
-int verbosity;
-
-const int VERB_QUIET = 0;
-const int VERB_NORMAL = 1;
-const int VERB_VERBOSE = 2;
-const int VERB_EXTRA = 3;
 
 void parse_cmdline(int argc, char** argv);
 void display_version();
@@ -144,12 +131,7 @@ void display_help() {
 	printf("--verbose: additional output\n");
 	printf("--extraverbose: even more additional output\n");
 	printf("\n");
-	printf("Exit codes:\n");
-	printf("0: success\n");
-	printf("1: memory allocaton failure\n");
-	printf("2: invalid command line\n");
-	printf("3: I/O error on input file\n");
-	printf("4: I/O error on output file\n");
+	display_help_exitcodes();
 }
 
 void display_license() {

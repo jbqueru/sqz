@@ -17,19 +17,6 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#include "bitstream.h"
+#include "debug.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
-bitstream* bitstream_construct() {
-	bitstream* that = (bitstream*) malloc(sizeof (bitstream));
-	if (!that) {
-		fprintf(stderr, "Can't allocate bitstream structure\n");
-		exit(1);
-	}
-	return that;
-}
-
-void bitstream_destruct(bitstream* that);
-
+int verbosity;

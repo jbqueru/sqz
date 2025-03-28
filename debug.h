@@ -17,19 +17,18 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#include "bitstream.h"
+#ifndef DEBUG_H_INCLUDED
+#define DEBUG_H_INCLUDED
 
-#include <stdio.h>
-#include <stdlib.h>
+#define SS(x) SSS(x)
+#define SSS(x) #x
+#define FL __FILE__ ":" SS(__LINE__) ": "
 
-bitstream* bitstream_construct() {
-	bitstream* that = (bitstream*) malloc(sizeof (bitstream));
-	if (!that) {
-		fprintf(stderr, "Can't allocate bitstream structure\n");
-		exit(1);
-	}
-	return that;
-}
+extern int verbosity;
 
-void bitstream_destruct(bitstream* that);
+#define VERB_QUIET 0
+#define VERB_NORMAL 1
+#define VERB_VERBOSE 2
+#define VERB_EXTRA 3
 
+#endif /* DEBUG_H_INCLUDED */

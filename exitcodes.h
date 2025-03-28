@@ -17,19 +17,15 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#include "bitstream.h"
+#ifndef EXITCODES_H_INCLUDED
+#define EXITCODES_H_INCLUDED
 
-#include <stdio.h>
-#include <stdlib.h>
+extern const int EXIT_SUCCESS;
+extern const int EXIT_MEMORY;
+extern const int EXIT_CMDLINE;
+extern const int EXIT_INPUTFILE;
+extern const int EXIT_OUTPUTFILE;
 
-bitstream* bitstream_construct() {
-	bitstream* that = (bitstream*) malloc(sizeof (bitstream));
-	if (!that) {
-		fprintf(stderr, "Can't allocate bitstream structure\n");
-		exit(1);
-	}
-	return that;
-}
+void display_help_exitcodes();
 
-void bitstream_destruct(bitstream* that);
-
+#endif /* EXITCODES_H_INCLUDED */

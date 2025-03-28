@@ -17,19 +17,21 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#include "bitstream.h"
+#include "exitcodes.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 
-bitstream* bitstream_construct() {
-	bitstream* that = (bitstream*) malloc(sizeof (bitstream));
-	if (!that) {
-		fprintf(stderr, "Can't allocate bitstream structure\n");
-		exit(1);
-	}
-	return that;
+const int EXIT_SUCCESS = 0;
+const int EXIT_MEMORY = 1;
+const int EXIT_CMDLINE = 2;
+const int EXIT_INPUTFILE = 3;
+const int EXIT_OUTPUTFILE = 4;
+
+void display_help_exitcodes() {
+    printf("Exit codes:\n");
+    printf("0: success\n");
+    printf("1: memory allocaton failure\n");
+    printf("2: invalid command line\n");
+    printf("3: I/O error on input file\n");
+    printf("4: I/O error on output file\n");
 }
-
-void bitstream_destruct(bitstream* that);
-
