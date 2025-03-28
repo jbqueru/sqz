@@ -153,7 +153,7 @@ void display_help() {
 }
 
 void display_license() {
-	printf("Copyright 2025 Jean-Baptiste \"Djaybee\" \"JBQ\" Queru\n");
+	printf("Copyright 2025 Jean-Baptiste M. \"Djaybee\" \"JBQ\" Queru\n");
 	printf("\n");
 	printf("This program is free software: you can redistribute it and/or modify\n");
 	printf("it under the terms of the GNU Affero General Public License as\n");
