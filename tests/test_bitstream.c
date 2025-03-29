@@ -302,5 +302,6 @@ int test_write() {
 		printf("bits 16-23 not properly written (public)\n");
 		ret = 1;
 	}
+	bitstream_destruct(bs);
 	return ret;
 }
