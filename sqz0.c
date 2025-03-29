@@ -21,24 +21,17 @@
 #include <stdlib.h>
 
 char* fn() {
-	long* symbol_counts = calloc(1 , sizeof(long));
+	unsigned long value;
+	long* ptr = calloc(1, sizeof(long));
 	for (int i = 0; i < 1; i++) {
-		symbol_counts[i] = 0;
+		ptr[i] = 0;
 	}
-	symbol_counts[0]++;
-
-	// count symbols with a nonzero count
-	long number_of_nonzero_symbols = 0;
-	if (symbol_counts[0] > 0) {
-		number_of_nonzero_symbols++;
+	if (*ptr) {
+		value = 0;
+	} else {
+		value = 1;
 	}
-	printf("non-zero symbols: %ld\n", number_of_nonzero_symbols);
-
-/* This is where gcc issues a warning, where it seems to believe
- * that number_of_nonzero_symbols is zero. The number is actually
- * deterministic, it's 1.
- */
-	return malloc(number_of_nonzero_symbols - 1);
+	return malloc(value - 1);
 }
 
 int main() { return !fn(); }
