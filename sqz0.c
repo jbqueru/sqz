@@ -22,6 +22,9 @@
 
 char* fn() {
 	long* symbol_counts = calloc(1 , sizeof(long));
+	for (int i = 0; i < 1; i++) {
+		symbol_counts[i] = 0;
+	}
 	symbol_counts[0]++;
 
 	// count symbols with a nonzero count
