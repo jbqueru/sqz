@@ -21,6 +21,7 @@ echo '(*) create output directories'
 mkdir -p out/bin || exit $?
 mkdir -p out/gfx || exit $?
 mkdir -p out/tos || exit $?
+mkdir -p out/tmp || exit $?
 
 echo '(*) build bitstream tests'
 gcc tests/test_bitstream.c bitstream.c exitcodes.c -O2 -Wall -Wextra -o out/bin/test_bitstream || exit $?
@@ -30,6 +31,9 @@ out/bin/test_bitstream || exit $?
 
 echo '(*) build Squeezer tool'
 gcc sqz.c bitstream.c cmdline.c debug.c exitcodes.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
+
+echo '(*) build gcc investigation tool'
+gcc sqz0.c -O2 -Wall -Wextra -o out/tmp/sqz0 || exit $?
 
 #echo '(*) run Squeezer tool'
 #out/bin/sqz out/tos/VMAX.PI1 || exit $?
