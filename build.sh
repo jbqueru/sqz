@@ -22,10 +22,16 @@ mkdir -p out/bin || exit $?
 mkdir -p out/gfx || exit $?
 mkdir -p out/tos || exit $?
 
+echo '(*) build bitstream tests'
+gcc tests/test_bitstream.c bitstream.c exitcodes.c -O2 -Wall -Wextra -o out/bin/test_bitstream || exit $?
+
+echo '(*) run bitstream tests'
+out/bin/test_bitstream || exit $?
+
 echo '(*) build Squeezer tool'
 gcc sqz.c bitstream.c cmdline.c debug.c exitcodes.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
 
-echo '(*) run Squeezer tool'
-out/bin/sqz out/tos/VMAX.PI1 || exit $?
+#echo '(*) run Squeezer tool'
+#out/bin/sqz out/tos/VMAX.PI1 || exit $?
 
 echo '(*) BUILD SUCCESSFUL'

@@ -17,7 +17,8 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#include "bitstream.h"
+#include "bitstream_internal.h"
+
 #include "debug.h"
 #include "exitcodes.h"
 
@@ -26,14 +27,6 @@
 #include <stdlib.h>
 
 const size_t bitstream_increment = 10240;
-
-struct bitstream {
-	size_t size;
-	size_t current;
-
-	unsigned char* array;
-	size_t allocated;
-};
 
 bitstream* bitstream_construct() {
 	bitstream* that = (bitstream*) malloc(sizeof (bitstream));
