@@ -17,6 +17,7 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+#include "bitstream.h"
 #include "cmdline.h"
 #include "debug.h"
 #include "exitcodes.h"
@@ -27,7 +28,7 @@
 #include <string.h>
 
 long* read_pi1();
-long* encode_huffman(long* source, long ssize);
+bitstream* encode_huffman(long* source, long ssize);
 
 int main(int argc, char** argv) {
 	parse_cmdline(argc, argv);
@@ -108,7 +109,7 @@ struct hufftree {
 	long parent;
 };
 
-long* encode_huffman(long* source, long ssize) {
+bitstream* encode_huffman(long* source, long ssize) {
 
 	// Compute range of symbols. mn = minimum, mx = maximum.
 	long mn = LONG_MAX, mx = LONG_MIN;
@@ -234,9 +235,11 @@ long* encode_huffman(long* source, long ssize) {
 		t >>=1;
 	}
 
-	printf("space needed:\n");
-	printf("%ld leaf nodes covering a span of %ld symbols (%ld bits): %ld bits total\n", nz, mx - mn + 1, bs, nz * bs);
-	printf("%ld inner nodes with %ld nodes to choose from (%ld bits): %ld bits total\n", nz - 1, 2 * (nz - 1), 2 * bn, (nz - 1) * 2 * bn);
+//	printf("space needed:\n");
+//	printf("%ld leaf nodes covering a span of %ld symbols (%ld bits): %ld bits total\n", nz, mx - mn + 1, bs, nz * bs);
+//	printf("%ld inner nodes with %ld nodes to choose from (%ld bits): %ld bits total\n", nz - 1, 2 * (nz - 1), 2 * bn, (nz - 1) * 2 * bn);
+
+	printf("%ld nodes, %ld bits each, %ld bits total\n", nz -1, 2 * (bs + 1), (nz - 1) * 2 * (bs + 1));
 
 	// 3 bits = add 3, read that many bits after implicit MSB, subtract 5, result = number of used symbols
 	// 000xxx = 3 extra bits, 8-15 -> 3-10
@@ -255,6 +258,11 @@ long* encode_huffman(long* source, long ssize) {
 
 	// store symbol offset
 
+	bitstream* stream = bitstream_construct();
 
-	return NULL;
+	for (long i = nz; i < 2 * nz - 1; i++) {
+		printf("node %ld - child 0 %ld child 1 %ld\n", i, tree[i].child0, tree[i].child1);
+	}
+
+	return stream;
 }
