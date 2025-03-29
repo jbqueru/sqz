@@ -26,10 +26,8 @@ char* fn() {
 
 	// count symbols with a nonzero count
 	long number_of_nonzero_symbols = 0;
-	for (long symbol_value = 0; symbol_value <= 0; symbol_value++) {
-		if (symbol_counts[symbol_value] > 0) {
-			number_of_nonzero_symbols++;
-		}
+	if (symbol_counts[0] > 0) {
+		number_of_nonzero_symbols++;
 	}
 	printf("non-zero symbols: %ld\n", number_of_nonzero_symbols);
 
