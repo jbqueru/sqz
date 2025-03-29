@@ -22,13 +22,18 @@
 
 #include <stddef.h>
 
-typedef struct {
-	unsigned char* array;
-	size_t size;
-} bitstream;
+typedef struct bitstream bitstream;
 
 bitstream* bitstream_construct();
 
 void bitstream_destruct(bitstream* that);
+
+size_t bitstream_bit_size(bitstream* that);
+
+size_t bitstream_byte_size(bitstream* that);
+
+unsigned char const * bitstream_byte_array(bitstream* that);
+
+void bitstream_write(bitstream* that, int bit);
 
 #endif /* BITSTREAM_H_INCLUDED */

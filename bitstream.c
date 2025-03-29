@@ -18,18 +18,74 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 #include "bitstream.h"
+#include "debug.h"
+#include "exitcodes.h"
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+const size_t bitstream_increment = 10240;
+
+struct bitstream {
+	size_t size;
+	size_t current;
+
+	unsigned char* array;
+	size_t allocated;
+};
 
 bitstream* bitstream_construct() {
 	bitstream* that = (bitstream*) malloc(sizeof (bitstream));
 	if (!that) {
-		fprintf(stderr, "Can't allocate bitstream structure\n");
-		exit(1);
+		fprintf(stderr, FL "Can't allocate bitstream structure (%zu bytes)\n", sizeof (bitstream));
+		exit(EXIT_MEMORY);
 	}
+	that -> size = 0;
+	that -> current = 0;
+
+	that -> array = NULL;
+	that -> allocated = 0;
 	return that;
 }
 
-void bitstream_destruct(bitstream* that);
+void bitstream_destruct(bitstream* that) {
+	if (that -> array) {
+		free(that -> array);
+	}
+	free(that);
+}
 
+size_t bitstream_bit_size(bitstream* that) {
+	return that -> size;
+}
+
+size_t bitstream_byte_size(bitstream* that) {
+	return (that -> size + CHAR_BIT - 1) / CHAR_BIT;
+}
+
+unsigned char const * bitstream_byte_array(bitstream* that) {
+	return that -> array;
+}
+
+void bitstream_write(bitstream* that, int bit) {
+	if (that -> current + 1 > that -> size) {
+		that -> size++;
+		if (that -> size > that -> allocated * CHAR_BIT) {
+			that -> allocated += bitstream_increment;
+			that -> array = realloc(that -> array, that -> allocated);
+			if (!that -> array) {
+				fprintf(stderr, FL "Can't grow bitstream storage array (%zu bytes)\n", that -> allocated);
+				exit(EXIT_MEMORY);
+			}
+		}
+	}
+	size_t byte_offset = that -> current / CHAR_BIT;
+	unsigned char byte = 1U << (CHAR_BIT - 1 - that -> current % CHAR_BIT);
+	if (bit) {
+		that -> array[byte_offset] |= byte;
+	} else {
+		that -> array[byte_offset] &= ~byte;
+	}
+	that -> current++;
+}
