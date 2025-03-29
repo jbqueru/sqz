@@ -49,26 +49,26 @@ bitstream* bitstream_construct() {
 	return that;
 }
 
-void bitstream_destruct(bitstream* that) {
+void bitstream_destruct(bitstream *const that) {
 	if (that -> array) {
 		free(that -> array);
 	}
 	free(that);
 }
 
-size_t bitstream_bit_size(bitstream* that) {
+size_t bitstream_bit_size(bitstream *const that) {
 	return that -> size;
 }
 
-size_t bitstream_byte_size(bitstream* that) {
+size_t bitstream_byte_size(bitstream *const that) {
 	return (that -> size + CHAR_BIT - 1) / CHAR_BIT;
 }
 
-unsigned char const * bitstream_byte_array(bitstream* that) {
+unsigned char const * bitstream_byte_array(bitstream *const that) {
 	return that -> array;
 }
 
-void bitstream_write(bitstream* that, int bit) {
+void bitstream_write(bitstream *const that, int bit) {
 	if (that -> current + 1 > that -> size) {
 		that -> size++;
 		if (that -> size > that -> allocated * CHAR_BIT) {

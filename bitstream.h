@@ -26,14 +26,14 @@ typedef struct bitstream bitstream;
 
 bitstream* bitstream_construct();
 
-void bitstream_destruct(bitstream* that);
+void bitstream_destruct(bitstream *const that);
 
-size_t bitstream_bit_size(bitstream* that);
+size_t bitstream_bit_size(bitstream *const that);
 
-size_t bitstream_byte_size(bitstream* that);
+size_t bitstream_byte_size(bitstream *const that);
 
-unsigned char const * bitstream_byte_array(bitstream* that);
+unsigned char const * bitstream_byte_array(bitstream *const that);
 
-void bitstream_write(bitstream* that, int bit);
+void bitstream_write(bitstream *const that, int bit);
 
 #endif /* BITSTREAM_H_INCLUDED */
