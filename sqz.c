@@ -20,6 +20,7 @@
 #include "bitstream.h"
 #include "cmdline.h"
 #include "debug.h"
+#include "degas.h"
 #include "exitcodes.h"
 
 #include <limits.h>
@@ -27,7 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-long* read_pi1(char* filename);
 bitstream* encode_huffman(long* source, long ssize);
 
 int main(int argc, char** argv) {
@@ -37,62 +37,6 @@ int main(int argc, char** argv) {
 	encode_huffman(pixels, 64000);
 	free(pixels);
 	return EXIT_SUCCESS;
-}
-
-long* read_pi1(char* filename) {
-	char* rawbits = NULL;
-	long* pixels = NULL;
-	FILE* file = NULL;
-
-	rawbits = malloc(32000);
-	if (!rawbits) {
-		fprintf(stderr, FL "Couldn't allocate memory for raw PI1 bits.\n");
-		exit(EXIT_MEMORY);
-	}
-	memset(rawbits, 0, 32000);
-
-	file = fopen(filename, "rb");
-	if (!file) {
-		fprintf(stderr, FL "Couldn't open file for reading.\n");
-		exit(EXIT_INPUTFILE);
-	}
-	if (fseek(file, 34, SEEK_SET)) {
-		fprintf(stderr, FL "Couldn't seek to pixel data in input file.\n");
-		exit(EXIT_INPUTFILE);
-	}
-	if (fread(rawbits, 1, 32000, file) < 32000) {
-		fprintf(stderr, FL "Couldn't read pixel data from input file.\n");
-		exit(EXIT_INPUTFILE);
-	}
-	if (fclose(file)) {
-		fprintf(stderr, FL "Couldn't close input file.\n");
-		exit(EXIT_INPUTFILE);
-	}
-	file = NULL;
-
-	pixels = malloc(64000 * sizeof(long));
-	if (!pixels) {
-		fprintf(stderr, FL "Couldn't allocate memory for decoded pixels.\n");
-		exit(EXIT_MEMORY);
-	}
-	memset(pixels, 0, 64000 * sizeof(long));
-
-	for (int y = 0; y < 200; y++) {
-		for (int x = 0; x < 320; x++) {
-			long c = 0;
-			for (int b = 0; b < 4; b++) {
-				if (rawbits[(x / 16) * 8 + (x % 16 / 8) + 160 * y + b * 2] & (0x80 >> (x % 8))) {
-					c |= (1L << b);
-				}
-			}
-			pixels[x + 320 * y] = c;
-		}
-	}
-
-	free(rawbits);
-	rawbits = NULL;
-
-	return pixels;
 }
 
 struct huffsymbol {

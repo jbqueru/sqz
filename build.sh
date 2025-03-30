@@ -30,7 +30,7 @@ echo '(*) run bitstream tests'
 out/bin/test_bitstream || exit $?
 
 echo '(*) build Squeezer tool'
-gcc sqz.c bitstream.c cmdline.c debug.c exitcodes.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
+gcc sqz.c bitstream.c cmdline.c debug.c degas.c exitcodes.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
 
 echo '(*) build gcc investigation tool'
 gcc sqz0.c -O1 -Wall -o out/tmp/sqz0 || exit $?
