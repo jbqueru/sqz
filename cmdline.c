@@ -26,12 +26,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* inputfilename;
-char* outputfilename;
+char* cmdline_inputfilename;
+char* cmdline_outputfilename;
 
 void parse_cmdline(int argc, char** argv) {
-	inputfilename = NULL;
-	outputfilename = NULL;
+	cmdline_inputfilename = NULL;
+	cmdline_outputfilename = NULL;
 	verbosity = VERB_NORMAL;
 	if (argc == 1) {
 		display_version();
@@ -74,18 +74,18 @@ void parse_cmdline(int argc, char** argv) {
 			fprintf(stderr, "Unrecognized option %s\n", argv[i]);
 			exit (EXIT_CMDLINE);
 		}
-		if (inputfilename) {
+		if (cmdline_inputfilename) {
 			fprintf(stderr, "Multiple input filenames found: %s\n", argv[i]);
 			exit (EXIT_CMDLINE);
 		} else {
-			inputfilename = strdup(argv[i]);
-			if (!inputfilename) {
+			cmdline_inputfilename = strdup(argv[i]);
+			if (!cmdline_inputfilename) {
 				fprintf(stderr, FL"Could not allocate input filename\n");
 				exit(EXIT_MEMORY);
 			}
 		}
 	}
-	if (!inputfilename) {
+	if (!cmdline_inputfilename) {
 		fprintf(stderr, "No input filename spcified\n");
 		exit(EXIT_CMDLINE);
 	}
@@ -94,7 +94,7 @@ void parse_cmdline(int argc, char** argv) {
 		printf("\n");
 	}
 	if (verbosity >= VERB_EXTRA) {
-		printf("input filename : %s\n", inputfilename);
+		printf("input filename : %s\n", cmdline_inputfilename);
 	}
 }
 

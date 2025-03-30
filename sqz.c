@@ -27,19 +27,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-long* read_pi1();
+long* read_pi1(char* filename);
 bitstream* encode_huffman(long* source, long ssize);
 
 int main(int argc, char** argv) {
 	parse_cmdline(argc, argv);
 	long* pixels = NULL;
-	pixels = read_pi1();
+	pixels = read_pi1(cmdline_inputfilename);
 	encode_huffman(pixels, 64000);
 	free(pixels);
 	return EXIT_SUCCESS;
 }
 
-long* read_pi1() {
+long* read_pi1(char* filename) {
 	char* rawbits = NULL;
 	long* pixels = NULL;
 	FILE* file = NULL;
@@ -51,7 +51,7 @@ long* read_pi1() {
 	}
 	memset(rawbits, 0, 32000);
 
-	file = fopen(inputfilename, "rb");
+	file = fopen(filename, "rb");
 	if (!file) {
 		fprintf(stderr, FL "Couldn't open file for reading.\n");
 		exit(EXIT_INPUTFILE);

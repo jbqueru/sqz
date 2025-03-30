@@ -20,8 +20,8 @@
 #ifndef CMDLINE_H_INCLUDED
 #define CMDLINE_H_INCLUDED
 
-extern char* inputfilename;
-extern char* outputfilename;
+extern char* cmdline_inputfilename;
+extern char* cmdline_outputfilename;
 
 void parse_cmdline(int argc, char** argv);
 void display_version();
