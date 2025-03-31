@@ -116,20 +116,20 @@ struct hufftree {
 
 bitstream* encode_huffman(long* source, long ssize) {
 
+	huffman* hf = huffman_construct();
+	huffman_compute_symbol_range(hf, source, ssize);
+
 	// Compute range of symbols. mn = minimum, mx = maximum.
-	long mn = LONG_MAX, mx = LONG_MIN;
-	for (long i = 0; i < ssize; i++) {
-		if (source[i] < mn) mn = source[i];
-		if (source[i] > mx) mx = source[i];
-	}
+	long mn = hf -> input_symbol_min, mx = hf -> input_symbol_max;
 	printf("min %ld max %ld\n", mn, mx);
 
 	// Gather counts of symbols
 	struct huffsymbol* symbols = malloc((mx - mn + 1) * sizeof(struct huffsymbol));
 	memset(symbols, 0, (mx - mn + 1) * sizeof(struct huffsymbol));
 
-	for (long i = 0; i < ssize; i++) {
-		symbols[source[i] - mn].count++;
+	huffman_compute_symbol_counts(hf, source, ssize);
+	for (long i = 0; i <= mx - mn; i++) {
+		symbols[i].count = hf -> symbol_counts[i];
 	}
 	for (long i = 0; i <= mx - mn; i++) {
 		printf("raw counts: value %ld count %ld\n", mn + i, symbols[i].count);
