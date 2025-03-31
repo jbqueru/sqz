@@ -35,13 +35,13 @@ huffman* huffman_construct() {
 	}
 	that -> input_symbol_min = LONG_MAX;
 	that -> input_symbol_max = LONG_MIN;
-	that -> symbol_counts = NULL;
+	that -> symbols = NULL;
 	return that;
 }
 
 void huffman_destruct(huffman *const that) {
 	if (that) {
-		free(that -> symbol_counts);
+		free(that -> symbols);
 	}
 	free(that);
 }
@@ -81,21 +81,21 @@ void huffman_compute_symbol_counts(huffman *const that,
 		fprintf(stderr, FL "Computing Huffman symbol counts on processor without symbol ranges\n");
 		exit(EXIT_INVALIDSTATE);
 	}
-	that -> symbol_counts = calloc(that -> input_symbol_max - that -> input_symbol_min + 1, sizeof(long));
-	if (!that -> symbol_counts) {
-		fprintf(stderr, FL "Can't allocate huffman symbol counts (%ld times %zu bytes)\n",
+	that -> symbols = calloc(that -> input_symbol_max - that -> input_symbol_min + 1, sizeof(hsymbol));
+	if (!that -> symbols) {
+		fprintf(stderr, FL "Can't allocate Huffman symbols (%ld times %zu bytes)\n",
 					that -> input_symbol_max - that -> input_symbol_min + 1,
-					sizeof (long));
+					sizeof (hsymbol));
 		exit(EXIT_MEMORY);
 	}
 	for (long i = 0; i < source_size; i++) {
-		that -> symbol_counts[source_symbols[i] - that -> input_symbol_min]++;
+		that -> symbols[source_symbols[i] - that -> input_symbol_min].count++;
 	}
 	if (verbosity >= VERB_EXTRA) {
 		for (long i = 0; i <= that -> input_symbol_max - that -> input_symbol_min; i++) {
 			printf("Huffman symbol count: %ld instances of %ld\n",
-					that -> symbol_counts[i],
-		  i + that -> input_symbol_min);
+					that -> symbols[i].count,
+					i + that -> input_symbol_min);
 		}
 	}
 }
@@ -129,7 +129,7 @@ bitstream* encode_huffman(long* source, long ssize) {
 
 	huffman_compute_symbol_counts(hf, source, ssize);
 	for (long i = 0; i <= mx - mn; i++) {
-		symbols[i].count = hf -> symbol_counts[i];
+		symbols[i].count = hf -> symbols[i].count;
 	}
 	for (long i = 0; i <= mx - mn; i++) {
 		printf("raw counts: value %ld count %ld\n", mn + i, symbols[i].count);

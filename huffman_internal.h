@@ -28,18 +28,18 @@ typedef struct hsymbol {
 	long bits;
 } hsymbol;
 
-typedef struct htree {
+typedef struct hnode {
 	long value;
 	long count;
 	long child0;
 	long child1;
 	long parent;
-} htree;
+} hnode;
 
 struct huffman {
 	long input_symbol_min;
 	long input_symbol_max;
-	long* symbol_counts;
+	hsymbol* symbols;
 };
 
 #endif /* HUFFMAN_INTERNAL_H_INCLUDED */
