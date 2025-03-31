@@ -28,14 +28,13 @@
 #include <string.h>
 
 huffman* huffman_construct() {
-	huffman* that = malloc(sizeof(huffman));
+	huffman* that = calloc(1, sizeof(huffman));
 	if (!that) {
 		fprintf(stderr, FL "Can't allocate huffman structure (%zu bytes)\n", sizeof (huffman));
 		exit(EXIT_MEMORY);
 	}
 	that -> input_symbol_min = LONG_MAX;
 	that -> input_symbol_max = LONG_MIN;
-	that -> symbols = NULL;
 	return that;
 }
 
@@ -81,6 +80,10 @@ void huffman_compute_symbol_counts(huffman *const that,
 		fprintf(stderr, FL "Computing Huffman symbol counts on processor without symbol ranges\n");
 		exit(EXIT_INVALIDSTATE);
 	}
+	if (that -> symbols) {
+		fprintf(stderr, FL "Computing Huffman symbol counts a second time\n");
+		exit(EXIT_INVALIDSTATE);
+	}
 	that -> symbols = calloc(that -> input_symbol_max - that -> input_symbol_min + 1, sizeof(hsymbol));
 	if (!that -> symbols) {
 		fprintf(stderr, FL "Can't allocate Huffman symbols (%ld times %zu bytes)\n",
@@ -97,6 +100,29 @@ void huffman_compute_symbol_counts(huffman *const that,
 					that -> symbols[i].count,
 					i + that -> input_symbol_min);
 		}
+	}
+}
+
+void huffman_count_symbols_present(huffman *const that) {
+	if (!that) {
+		fprintf(stderr, FL "Counting Huffman symbols present on NULL object\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	if (!that -> symbols) {
+		fprintf(stderr, FL "Computing Huffman symbols present on processor without symbol counts\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	if (that -> symbols_present) {
+		fprintf(stderr, FL "Counting Huffman symbols present a second time\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	for (long i = 0; i <= that -> input_symbol_max - that -> input_symbol_min; i++) {
+		if (that -> symbols[i].count > 0) {
+			that -> symbols_present++;
+		}
+	}
+	if (verbosity >= VERB_EXTRA) {
+		printf("Huffman %ld symbols present\n", that -> symbols_present);
 	}
 }
 
@@ -137,11 +163,8 @@ bitstream* encode_huffman(long* source, long ssize) {
 
 	// Count unique symbols
 	long nz = 0;
-	for (long i = 0; i <= mx - mn; i++) {
-		if (symbols[i].count > 0) {
-			nz++;
-		}
-	}
+	huffman_count_symbols_present(hf);
+	nz = hf -> symbols_present;
 	printf("%ld unique symbols\n", nz);
 
 	// Prepare empty tree

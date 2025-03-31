@@ -40,6 +40,7 @@ struct huffman {
 	long input_symbol_min;
 	long input_symbol_max;
 	hsymbol* symbols;
+	long symbols_present;
 };
 
 #endif /* HUFFMAN_INTERNAL_H_INCLUDED */
