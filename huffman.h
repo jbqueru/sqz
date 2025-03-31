@@ -26,6 +26,10 @@
 
 #include "bitstream.h"
 
+typedef struct huffman huffman;
+
+huffman* huffman_construct();
+
 bitstream* encode_huffman(long* source, long ssize);
 
 #endif

@@ -19,10 +19,26 @@
 
 #include "huffman.h"
 
+#include "debug.h"
+#include "exitcodes.h"
+
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+struct huffman {
+
+};
+
+huffman* huffman_construct() {
+	huffman* that = malloc(sizeof(huffman));
+	if (that == NULL) {
+		fprintf(stderr, FL "Can't allocate huffman structure (%zu bytes)\n", sizeof (huffman));
+		exit(EXIT_MEMORY);
+	}
+	return that;
+}
 
 struct huffsymbol {
 	long count;
