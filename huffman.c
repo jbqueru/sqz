@@ -17,7 +17,7 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#include "huffman.h"
+#include "huffman_internal.h"
 
 #include "debug.h"
 #include "exitcodes.h"
@@ -26,10 +26,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-struct huffman {
-
-};
 
 huffman* huffman_construct() {
 	huffman* that = malloc(sizeof(huffman));
