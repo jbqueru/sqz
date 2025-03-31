@@ -35,6 +35,7 @@ int main(int argc, char** argv) {
 	pixels = read_pi1(cmdline_inputfilename);
 	huffman* h = huffman_construct();
 	huffman_compute_symbol_range(h, pixels, 64000);
+	huffman_compute_symbol_counts(h, pixels, 64000);
 	huffman_destruct(h);
 	encode_huffman(pixels, 64000);
 	free(pixels);

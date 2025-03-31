@@ -39,6 +39,11 @@ void huffman_compute_symbol_range(huffman *const that,
 			long const *const source,
 			long const source_size);
 
+/* Compute counts of input symbols */
+void huffman_compute_symbol_counts(huffman *const that,
+								   long const *const source_symbols,
+								   long const source_size);
+
 bitstream* encode_huffman(long* source, long ssize);
 
 #endif
