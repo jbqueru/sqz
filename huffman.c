@@ -217,7 +217,7 @@ struct hufftree {
 	long parent;
 };
 
-bitstream* encode_huffman(long* source, long ssize) {
+void encode_huffman(long* source, long ssize) {
 
 	huffman* hf = huffman_construct();
 	huffman_compute_symbol_range(hf, source, ssize);
@@ -328,8 +328,4 @@ bitstream* encode_huffman(long* source, long ssize) {
 		tot += symbols[tree[i].value - mn].bits * symbols[tree[i].value - mn].count;
 	}
 	printf("%ld total bits of Huffman codes (%ld bytes)\n", tot, (tot + 7) / 8);
-
-	bitstream* stream = bitstream_construct();
-
-	return stream;
 }
