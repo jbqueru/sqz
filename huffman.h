@@ -53,6 +53,4 @@ void huffman_build_tree(huffman* const that);
 /* Build Huffman codes */
 void huffman_build_codes(huffman* const that);
 
-void encode_huffman(long* source, long ssize);
-
 #endif

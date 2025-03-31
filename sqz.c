@@ -40,7 +40,6 @@ int main(int argc, char** argv) {
 	huffman_build_tree(h);
 	huffman_build_codes(h);
 	huffman_destruct(h);
-	encode_huffman(pixels, 64000);
 	free(pixels);
 	return EXIT_SUCCESS;
 }
