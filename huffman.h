@@ -17,23 +17,15 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+/*
+ * Definitions for a Huffman processor
+ */
+
+#ifndef HUFFMAN_H_INCLUDED
+#define HUFFMAN_H_INCLUDED
+
 #include "bitstream.h"
-#include "cmdline.h"
-#include "debug.h"
-#include "degas.h"
-#include "exitcodes.h"
-#include "huffman.h"
 
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+bitstream* encode_huffman(long* source, long ssize);
 
-int main(int argc, char** argv) {
-	parse_cmdline(argc, argv);
-	long* pixels = NULL;
-	pixels = read_pi1(cmdline_inputfilename);
-	encode_huffman(pixels, 64000);
-	free(pixels);
-	return EXIT_SUCCESS;
-}
+#endif
