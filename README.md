@@ -1,7 +1,7 @@
 # sqz
 Data compressor geared toward retrocomputing
 
-# background on compression approaches
+# Background on compression approaches
 
 ## Prefix-free binary coding
 
