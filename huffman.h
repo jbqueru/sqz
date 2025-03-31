@@ -36,7 +36,7 @@ void huffman_destruct(huffman *const that);
 
 /* Compute range of input symbols */
 void huffman_compute_symbol_range(huffman *const that,
-			long const *const source,
+			long const *const source_symbols,
 			long const source_size);
 
 /* Compute counts of input symbols */
