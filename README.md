@@ -360,3 +360,7 @@ That can be extended beyond pairs of symbols as needed, based on
 the number of distinct symbols and the size of the input.
 
 ### Canonical Huffman
+
+# ST File formats
+
+NEO, PI1, PI2, PI3, PC1, PC2, PC3, IFF, SPU, SPC, KID, CA1, CA2, CA3
