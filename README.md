@@ -342,4 +342,21 @@ a separate entry. If the integers are sparse, they can be
 stored as a bitmap, or as hierarchical bitmaps (where the
 number of levels and the width of each chunk are parameters).
 
+### Somewhere between Huffman and Arithmetic
+
+Taking the extreme example of a dictionary with 2 input symbols,
+Huffman obviously offers no compression.
+
+Now, taking inspiration from Arithmetic coding, we can take
+the probabilities P0 and P1 of the two symbols, and make guesses
+about the probabilities of pairs of symbols, where the probability
+of 00 is assumed to be P0^2, that of 01 and 10 to be P0*P1, and
+that of 11 to be P1^2.
+
+However, unless the data is perfectly shuffled, it's more efficient
+to run Huffman on pairs of symbols directly.
+
+That can be extended beyond pairs of symbols as needed, based on
+the number of distinct symbols and the size of the input.
+
 ### Canonical Huffman
