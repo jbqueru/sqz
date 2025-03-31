@@ -41,6 +41,7 @@ struct huffman {
 	long input_symbol_max;
 	hsymbol* symbols;
 	long symbols_present;
+	hnode* tree;
 };
 
 #endif /* HUFFMAN_INTERNAL_H_INCLUDED */

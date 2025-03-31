@@ -47,6 +47,9 @@ void huffman_compute_symbol_counts(huffman *const that,
 /* Count symbols present */
 void huffman_count_symbols_present(huffman *const that);
 
+/* Build Huffman tree */
+void huffman_build_tree(huffman* const that);
+
 bitstream* encode_huffman(long* source, long ssize);
 
 #endif

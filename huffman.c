@@ -126,6 +126,83 @@ void huffman_count_symbols_present(huffman *const that) {
 	}
 }
 
+void huffman_build_tree(huffman* const that) {
+	if (!that) {
+		fprintf(stderr, FL "Building Huffman tree on NULL object\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	if (!that -> symbols_present) {
+		fprintf(stderr, FL "Building Huffman tree on processor without symbols present\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	if (that -> tree) {
+		fprintf(stderr, FL "Building Huffman tree a second time\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+
+	that -> tree = calloc(2 * that -> symbols_present - 1, sizeof(hnode));
+	if (!that -> tree) {
+		fprintf(stderr, FL "Can't allocate Huffman tree (%ld times %zu bytes)\n",
+					2 * that -> symbols_present - 1,
+					sizeof(hnode));
+		exit(EXIT_MEMORY);
+	}
+	for (long i = 0; i < 2 * that -> symbols_present - 1; i++) {
+		that -> tree[i].child0= LONG_MAX;
+		that -> tree[i].child1 = LONG_MAX;
+		that -> tree[i].parent = LONG_MAX;
+	}
+	long j = 0;
+	for (long i = 0; i <= that -> input_symbol_max - that -> input_symbol_min; i++) {
+		if (that -> symbols[i].count != 0) {
+			that -> tree[j].value = i + that -> input_symbol_min;
+			that -> tree[j].count = that -> symbols[i].count;
+			j++;
+		}
+	}
+
+	// Huffman core algorithm
+	for (long i = that -> symbols_present ; i < 2 * that -> symbols_present - 1; i++) {
+		long mi1, mi2, mv1, mv2;
+		mi1 = mi2 = mv1 = mv2 = LONG_MAX;
+		for (long j = 0; j < i; j++) {
+			if (that -> tree[j].parent != LONG_MAX) {
+				continue;
+			}
+			if (mv1 > that -> tree[j].count) {
+				mv2 = mv1;
+				mi2 = mi1;
+				mv1 = that -> tree[j].count;
+				mi1 = j;
+			} else if (mv2 > that -> tree[j].count) {
+				mv2 = that -> tree[j].count;
+				mi2 = j;
+			}
+		}
+		if (verbosity >= VERB_EXTRA) {
+			printf("Huffman core min values %ld %ld at %ld %ld\n", mv1, mv2, mi1, mi2);
+		}
+		that -> tree[i].child0 = mi1;
+		that -> tree[i].child1 = mi2;
+		that -> tree[i].count = mv1 + mv2;
+		that -> tree[mi1].parent = i;
+		that -> tree[mi2].parent = i;
+	}
+
+	// Display Huffman tree
+	if (verbosity >= VERB_EXTRA) {
+		for (long i = 0; i < 2 * that -> symbols_present - 1; i++) {
+			printf("Huffman node %ld", i);
+			if (that -> tree[i].child0 == LONG_MAX) {
+				printf(" value %ld", that -> tree[i].value);
+			} else {
+				printf(" children %ld %ld", that -> tree[i].child0, that -> tree[i].child1);
+			}
+			printf(" count %ld\n", that -> tree[i].count);
+		}
+	}
+}
+
 struct huffsymbol {
 	long count;
 	long bits;
@@ -166,6 +243,8 @@ bitstream* encode_huffman(long* source, long ssize) {
 	huffman_count_symbols_present(hf);
 	nz = hf -> symbols_present;
 	printf("%ld unique symbols\n", nz);
+
+	huffman_build_tree(hf);
 
 	// Prepare empty tree
 	struct hufftree* tree = malloc((2 * nz - 1) * sizeof(struct hufftree));
