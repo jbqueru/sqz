@@ -329,47 +329,7 @@ bitstream* encode_huffman(long* source, long ssize) {
 	}
 	printf("%ld total bits of Huffman codes (%ld bytes)\n", tot, (tot + 7) / 8);
 
-	long t = mx - mn;
-	long bs = 0;
-	while (t) {
-		bs++;
-		t >>=1;
-	}
-	t = 2 * (nz - 1);
-	long bn = 0;
-	while (t) {
-		bn++;
-		t >>=1;
-	}
-
-//	printf("space needed:\n");
-//	printf("%ld leaf nodes covering a span of %ld symbols (%ld bits): %ld bits total\n", nz, mx - mn + 1, bs, nz * bs);
-//	printf("%ld inner nodes with %ld nodes to choose from (%ld bits): %ld bits total\n", nz - 1, 2 * (nz - 1), 2 * bn, (nz - 1) * 2 * bn);
-
-	printf("%ld nodes, %ld bits each, %ld bits total\n", nz -1, 2 * (bs + 1), (nz - 1) * 2 * (bs + 1));
-
-	// 3 bits = add 3, read that many bits after implicit MSB, subtract 5, result = number of used symbols
-	// 000xxx = 3 extra bits, 8-15 -> 3-10
-	// 001xxxx = 4 extra bits, 16-31 -> 11-26
-	// 010xxxxx = 5 extra bits, 32-63 -> 27-58
-	// 011xxxxxx = 6 extra bits, 64-127 -> 59-122
-	// 100xxxxxxx = 7 extra bits, 128-255 -> 123-250
-	// 101xxxxxxxx = 9 extra bits, 256-511 -> 251-506
-	// 110xxxxxxxxx = 9 extra bits, 512-1023 -> 507-1018
-	// 111xxxxxxxxxx = 10 extra bits, 1024-2047 -> 1019-2042
-	// 2042 is enough for a 2D signed delta with enough additional symbols for LZ, RLE, BWT
-
-	// store span of symbols (can assume there are at least as many as used symbols)
-
-
-
-	// store symbol offset
-
 	bitstream* stream = bitstream_construct();
-
-	for (long i = nz; i < 2 * nz - 1; i++) {
-		printf("node %ld - child 0 %ld child 1 %ld\n", i, tree[i].child0, tree[i].child1);
-	}
 
 	return stream;
 }
