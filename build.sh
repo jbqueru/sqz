@@ -32,9 +32,6 @@ out/bin/test_bitstream || exit $?
 echo '(*) build Squeezer tool'
 gcc sqz.c bitstream.c cmdline.c debug.c degas.c exitcodes.c huffman.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
 
-echo '(*) build gcc investigation tool'
-gcc sqz0.c -O1 -Wall -o out/tmp/sqz0 || exit $?
-
 #echo '(*) run Squeezer tool'
 #out/bin/sqz out/tos/VMAX.PI1 || exit $?
 
