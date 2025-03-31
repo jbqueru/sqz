@@ -247,9 +247,10 @@ Lebesgue, Moore, Peano).
 ### Deflate
 
 -recognizes that very long lengths and offsets might not
-be very useful, and limits them to 15 bits (though the
+be very useful, and limits offsets to 15 bits (though the
 format supports 16 bits, which is what differentiates
-deflate64).
+deflate64) and lengths to 8 bits (since longer matches
+could be encoded into multiple matches).
 
 -recognizes that Huffman coding of exact offsets and lengths
 is counter-productive, because values tend to be unique:
@@ -263,6 +264,9 @@ from the original symbol.
 
 -intertwines two sets of Huffman symbols along with other
 data (non-prefix free but whose length is known).
+
+-has 2 options to store the Huffman tree: conventional, and
+canonical + RLE.
 
 ### Bzip2
 
