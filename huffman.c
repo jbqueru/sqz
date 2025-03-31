@@ -157,6 +157,7 @@ void huffman_build_tree(huffman* const that) {
 		if (that -> symbols[i].count != 0) {
 			that -> tree[j].value = i + that -> input_symbol_min;
 			that -> tree[j].count = that -> symbols[i].count;
+			that -> symbols[i].node = j;
 			j++;
 		}
 	}
@@ -201,6 +202,47 @@ void huffman_build_tree(huffman* const that) {
 			printf(" count %ld\n", that -> tree[i].count);
 		}
 	}
+}
+
+void huffman_build_codes(huffman* const that) {
+	if (!that) {
+		fprintf(stderr, FL "Building Huffman codes on NULL object\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	if (!that -> tree) {
+		fprintf(stderr, FL "Building Huffman tree on processor without tree\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	for (long i = 0; i < that -> symbols_present; i++) {
+		for (long j = i; that -> tree[j].parent != LONG_MAX; j = that -> tree[j].parent) {
+			that -> symbols[that -> tree[i].value - that -> input_symbol_min].bits++;
+		}
+	}
+
+	if (verbosity >= VERB_EXTRA) {
+		for (long i = 0; i <= that -> input_symbol_max - that -> input_symbol_min; i++) {
+			printf("Symbol value %ld ", i);
+			if (that -> symbols[i].count) {
+				printf("node %ld code ", that -> symbols[i].node);
+				for (long j = that -> symbols[i].bits - 1; j >= 0; j--) {
+					long n = that -> symbols[i].node;
+					for (long k = 0; k < j; k++) {
+						n = that -> tree[n].parent;
+					}
+					if (that -> tree[that -> tree[n].parent].child0 == n) {
+						printf("0");
+					} else {
+						printf("1");
+					}
+				}
+				printf(" (%ld bits)", that -> symbols[i].bits);
+			} else {
+				printf("not present in input");
+			}
+			printf("\n");
+		}
+	}
+
 }
 
 struct huffsymbol {
