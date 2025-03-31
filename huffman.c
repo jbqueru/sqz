@@ -88,7 +88,7 @@ void huffman_compute_symbol_counts(huffman *const that,
 	if (!that -> symbols) {
 		fprintf(stderr, FL "Can't allocate Huffman symbols (%ld times %zu bytes)\n",
 					that -> input_symbol_max - that -> input_symbol_min + 1,
-					sizeof (hsymbol));
+					sizeof(hsymbol));
 		exit(EXIT_MEMORY);
 	}
 	for (long i = 0; i < source_size; i++) {
