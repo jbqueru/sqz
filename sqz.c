@@ -33,6 +33,9 @@ int main(int argc, char** argv) {
 	parse_cmdline(argc, argv);
 	long* pixels = NULL;
 	pixels = read_pi1(cmdline_inputfilename);
+	huffman* h = huffman_construct();
+	huffman_compute_symbol_range(h, pixels, 64000);
+	huffman_destruct(h);
 	encode_huffman(pixels, 64000);
 	free(pixels);
 	return EXIT_SUCCESS;

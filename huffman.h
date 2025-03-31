@@ -28,7 +28,16 @@
 
 typedef struct huffman huffman;
 
+/* Construct a Huffman processor */
 huffman* huffman_construct();
+
+/* Destruct a Huffman processor */
+void huffman_destruct(huffman *const that);
+
+/* Compute range of input symbols */
+void huffman_compute_symbol_range(huffman *const that,
+			long const *const source,
+			long const source_size);
 
 bitstream* encode_huffman(long* source, long ssize);
 

@@ -33,7 +33,53 @@ huffman* huffman_construct() {
 		fprintf(stderr, FL "Can't allocate huffman structure (%zu bytes)\n", sizeof (huffman));
 		exit(EXIT_MEMORY);
 	}
+	that -> input_symbol_min = LONG_MAX;
+	that -> input_symbol_max = LONG_MIN;
 	return that;
+}
+
+void huffman_destruct(huffman *const that) {
+	if (that) {
+		free(that);
+	}
+}
+
+void huffman_compute_symbol_range(huffman *const that,
+			long const *const source,
+			long const source_size) {
+	if (!that) {
+		fprintf(stderr, FL "Computing Huffman symbol range on NULL object\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	if (that -> input_symbol_min <= that -> input_symbol_max) {
+		fprintf(stderr, FL "Huffman symbol range already computed\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	for (long i = 0; i < source_size; i++) {
+		if (source[i] < that -> input_symbol_min) {
+			that -> input_symbol_min = source[i];
+		}
+		if (source[i] > that -> input_symbol_max) {
+			that -> input_symbol_max = source[i];
+		}
+	}
+	if (verbosity >= VERB_EXTRA) {
+		printf("Huffman symbol range: %ld-%ld\n", that -> input_symbol_min, that -> input_symbol_max);
+	}
+}
+
+void huffman_compute_symbol_counts(huffman *const that,
+			long const *const source,
+			long const source_size) {
+	if (!that) {
+		fprintf(stderr, FL "Computing Huffman symbol counts on NULL object\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+	if (that -> input_symbol_min > that -> input_symbol_max) {
+		fprintf(stderr, FL "Computing Huffman symbol counts on processor without symbol ranges\n");
+		exit(EXIT_INVALIDSTATE);
+	}
+//	symbol_counts = malloc()
 }
 
 struct huffsymbol {

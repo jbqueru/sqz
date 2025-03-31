@@ -23,7 +23,9 @@
 #include "huffman.h"
 
 struct huffman {
-
+	long input_symbol_min;
+	long input_symbol_max;
+	long* symbol_counts;
 };
 
 #endif /* HUFFMAN_INTERNAL_H_INCLUDED */

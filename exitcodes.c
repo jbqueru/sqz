@@ -26,6 +26,7 @@ const int EXIT_MEMORY = 1;
 const int EXIT_CMDLINE = 2;
 const int EXIT_INPUTFILE = 3;
 const int EXIT_OUTPUTFILE = 4;
+const int EXIT_INVALIDSTATE = 5;
 
 void display_help_exitcodes() {
     printf("Exit codes:\n");
@@ -34,4 +35,5 @@ void display_help_exitcodes() {
     printf("2: invalid command line\n");
     printf("3: I/O error on input file\n");
     printf("4: I/O error on output file\n");
+    printf("5: invalid internal state\n");
 }
