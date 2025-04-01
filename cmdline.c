@@ -69,14 +69,32 @@ void parse_cmdline(int argc, char** argv) {
 			verbosity = VERB_EXTRA;
 			continue;
 		}
+		if (!strcmp(argv[i], "--output")) {
+			i++;
+			if (i >= argc) {
+				fprintf(stderr, "--output specified without filename\n");
+				exit(EXIT_CMDLINE);
+			}
+			if (cmdline_outputfilename) {
+				fprintf(stderr, "Multiple output filenames found: %s\n", argv[i]);
+				exit(EXIT_CMDLINE);
+			} else {
+				cmdline_outputfilename = strdup(argv[i]);
+				if (!cmdline_outputfilename) {
+					fprintf(stderr, FL"Could not allocate output filename\n");
+					exit(EXIT_MEMORY);
+				}
+				continue;
+			}
+		}
 
 		if (argv[i][0] == '-') {
 			fprintf(stderr, "Unrecognized option %s\n", argv[i]);
-			exit (EXIT_CMDLINE);
+			exit(EXIT_CMDLINE);
 		}
 		if (cmdline_inputfilename) {
 			fprintf(stderr, "Multiple input filenames found: %s\n", argv[i]);
-			exit (EXIT_CMDLINE);
+			exit(EXIT_CMDLINE);
 		} else {
 			cmdline_inputfilename = strdup(argv[i]);
 			if (!cmdline_inputfilename) {
@@ -95,6 +113,7 @@ void parse_cmdline(int argc, char** argv) {
 	}
 	if (verbosity >= VERB_EXTRA) {
 		printf("input filename : %s\n", cmdline_inputfilename);
+		printf("output filename : %s\n", cmdline_outputfilename);
 	}
 }
 
