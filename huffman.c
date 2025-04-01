@@ -296,5 +296,16 @@ void huffman_write_tree(huffman *const that, bitstream *const stream) {
 		printf("Huffman node entry bit size %ld\n", bits);
 		printf("Huffman node count %ld\n", that -> symbols_present - 1);
 		printf("Huffman symbol offset %ld\n", that -> input_symbol_min);
+
+		long coded_offset;
+		if (that -> input_symbol_min >= 0) {
+			coded_offset = that -> input_symbol_min * 2;
+		} else {
+			coded_offset = -that -> input_symbol_min * 2 + 1;
+		}
+
+		bitstream_write_value(stream, bits, 4);
+		bitstream_write_value(stream, that -> symbols_present - 1, 12);
+		bitstream_write_value(stream, coded_offset, 12);
 	}
 }
