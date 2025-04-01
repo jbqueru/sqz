@@ -221,7 +221,7 @@ void huffman_build_codes(huffman* const that) {
 
 	if (verbosity >= VERB_EXTRA) {
 		for (long i = 0; i <= that -> input_symbol_max - that -> input_symbol_min; i++) {
-			printf("Symbol value %ld ", i);
+			printf("Huffman symbol value %ld ", i);
 			if (that -> symbols[i].count) {
 				printf("node %ld code ", that -> symbols[i].node);
 				for (long j = that -> symbols[i].bits - 1; j >= 0; j--) {
