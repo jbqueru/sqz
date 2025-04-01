@@ -365,6 +365,32 @@ the number of distinct symbols and the size of the input.
 
 ### Canonical Huffman
 
-# ST File formats
+# Atari ST
+
+## Known image file formats
 
 NEO, PI1, PI2, PI3, PC1, PC2, PC3, IFF, SPU, SPC, KID, CA1, CA2, CA3
+
+## Squeezer image file format
+
+Extensions: QS1, QS2, QS3, QSI
+
+2 bits: 00-01-10 standard resolutions 11 custom
+
+For standard color resolutions, 1 bit for palette depth
+(0 = ST, 1 = STe), then the right number of bits to specify
+what is present, then the palette entries, packed RGB MSB.
+
+Encoding information:
+
+
+# Other computers
+
+Amstrad CPC: A (QA1, QA2, QA3, QAI)
+BBC micro: B
+C64: C
+Amiga: G
+Generic: Q (SQI)
+(ST: S)
+Thomson: T
+ZX Spectrum: Z
