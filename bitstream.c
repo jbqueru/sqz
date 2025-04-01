@@ -61,7 +61,7 @@ unsigned char const * bitstream_byte_array(bitstream *const that) {
 	return that -> array;
 }
 
-void bitstream_write(bitstream *const that, int bit) {
+void bitstream_write_bit(bitstream *const that, int bit) {
 	if (that -> current + 1 > that -> size) {
 		that -> size++;
 		if (that -> size > that -> allocated * CHAR_BIT) {
@@ -81,4 +81,16 @@ void bitstream_write(bitstream *const that, int bit) {
 		that -> array[byte_offset] &= ~byte;
 	}
 	that -> current++;
+}
+
+void bitstream_write_value(bitstream *const that, long value, int numbits) {
+	for (int i = numbits - 1; i >= 0; i--) {
+		bitstream_write_bit(that, (value & (1L << i)) != 0);
+	}
+}
+
+void bitstream_dump_to_file(bitstream *const that, char const *const filename) {
+	FILE* outputfile = fopen(filename, "wb");
+	fwrite(bitstream_byte_array(that), 1, bitstream_byte_size(that), outputfile);
+	fclose(outputfile);
 }

@@ -34,6 +34,10 @@ size_t bitstream_byte_size(bitstream *const that);
 
 unsigned char const * bitstream_byte_array(bitstream *const that);
 
-void bitstream_write(bitstream *const that, int bit);
+void bitstream_write_bit(bitstream *const that, int bit);
+
+void bitstream_write_value(bitstream *const that, long value, int numbits);
+
+void bitstream_dump_to_file(bitstream *const that, char const *const filename);
 
 #endif /* BITSTREAM_H_INCLUDED */

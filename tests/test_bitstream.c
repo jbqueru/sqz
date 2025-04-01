@@ -62,7 +62,7 @@ int test_init_state() {
 int test_write() {
 	int ret = 0;
 	bitstream* bs = bitstream_construct();
-	bitstream_write(bs, 1);
+	bitstream_write_bit(bs, 1);
 	if (bs -> allocated == 0) {
 		printf("allocated size zero after writing a bit\n");
 		ret = 1;
@@ -95,13 +95,13 @@ int test_write() {
 		printf("bit 0 not properly written (public)\n");
 		ret = 1;
 	}
-	bitstream_write(bs, 0);
-	bitstream_write(bs, 1);
-	bitstream_write(bs, 0);
-	bitstream_write(bs, 0);
-	bitstream_write(bs, 1);
-	bitstream_write(bs, 0);
-	bitstream_write(bs, 1);
+	bitstream_write_bit(bs, 0);
+	bitstream_write_bit(bs, 1);
+	bitstream_write_bit(bs, 0);
+	bitstream_write_bit(bs, 0);
+	bitstream_write_bit(bs, 1);
+	bitstream_write_bit(bs, 0);
+	bitstream_write_bit(bs, 1);
 	if (bs -> size != 8) {
 		printf("internal size after writing 8 bits isn't 8\n");
 		ret = 1;
@@ -126,10 +126,10 @@ int test_write() {
 		printf("bits 0-7 not properly written #1 (public)\n");
 		ret = 1;
 	}
-	bitstream_write(bs, 1);
-	bitstream_write(bs, 1);
-	bitstream_write(bs, 1);
-	bitstream_write(bs, 1);
+	bitstream_write_bit(bs, 1);
+	bitstream_write_bit(bs, 1);
+	bitstream_write_bit(bs, 1);
+	bitstream_write_bit(bs, 1);
 	if (bs -> allocated < 2) {
 		printf("allocated size too small after writing 12 bits\n");
 		ret = 1;
@@ -166,10 +166,10 @@ int test_write() {
 		printf("bits 8-11 not properly written (public)\n");
 		ret = 1;
 	}
-	bitstream_write(bs, 0);
-	bitstream_write(bs, 0);
-	bitstream_write(bs, 0);
-	bitstream_write(bs, 0);
+	bitstream_write_bit(bs, 0);
+	bitstream_write_bit(bs, 0);
+	bitstream_write_bit(bs, 0);
+	bitstream_write_bit(bs, 0);
 	if (bs -> allocated < 2) {
 		printf("allocated size too small after writing 16 bits\n");
 		ret = 1;
@@ -206,8 +206,8 @@ int test_write() {
 		printf("bits 8-15 not properly written #1 (public)\n");
 		ret = 1;
 	}
-	bitstream_write(bs, 0);
-	bitstream_write(bs, 0);
+	bitstream_write_bit(bs, 0);
+	bitstream_write_bit(bs, 0);
 	if (bs -> allocated < 3) {
 		printf("allocated size too small after writing 18 bits\n");
 		ret = 1;
@@ -252,12 +252,12 @@ int test_write() {
 		printf("bits 16-17 not properly written (public)\n");
 		ret = 1;
 	}
-	bitstream_write(bs, 1);
-	bitstream_write(bs, 1);
-	bitstream_write(bs, 1);
-	bitstream_write(bs, 0);
-	bitstream_write(bs, 1);
-	bitstream_write(bs, 0);
+	bitstream_write_bit(bs, 1);
+	bitstream_write_bit(bs, 1);
+	bitstream_write_bit(bs, 1);
+	bitstream_write_bit(bs, 0);
+	bitstream_write_bit(bs, 1);
+	bitstream_write_bit(bs, 0);
 	if (bs -> allocated < 3) {
 		printf("allocated size too small after writing 24 bits\n");
 		ret = 1;
