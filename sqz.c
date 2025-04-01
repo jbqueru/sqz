@@ -43,6 +43,9 @@ int main(int argc, char** argv) {
 	bitstream* s = bitstream_construct();
 
 	huffman_write_tree(h, s);
+	if (cmdline_outputfilename) {
+		bitstream_dump_to_file(s, cmdline_outputfilename);
+	}
 
 	huffman_destruct(h);
 	free(pixels);
