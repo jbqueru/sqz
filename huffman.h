@@ -53,4 +53,7 @@ void huffman_build_tree(huffman *const that);
 /* Build Huffman codes */
 void huffman_build_codes(huffman *const that);
 
+/* Write Huffman tree */
+void huffman_write_tree(huffman *const that, bitstream *const stream);
+
 #endif

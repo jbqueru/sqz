@@ -243,3 +243,58 @@ void huffman_build_codes(huffman* const that) {
 		}
 	}
 }
+
+/*
+ * Assume that the original symbols are at most 8 bit.
+ *
+ * Worst pre-processing (2D signed delta-packing) will make the range
+ * 		-510..510, i.e. 0..1020 after offset.
+ * The last few values might be used for meta data, e.g. BTW markers,
+ *      bijective numeration, EOF marker.
+ * The system will limit itself to 1025 symbols numbered 0..1024, meaning
+ * 		1024 nodes numbered 1025..2048, where the root is 2048 and the
+ * 		inner nodes are 1025-2047, i.e. node entries are expected to fit
+ * 		in 11 bits.
+ * At the bottom end, the smallest sensical Huffman tree has 3 symbols, 2
+ *		nodes, 1 inner node, i.e. 2 bits per node entry.
+ * It would be theoretically possible to limit the range from 4 to 11 bits
+ * 		per node entry, at the cost of a little efficiency for very
+ * 		small trees (8->16, 18->24 and 24->32 bits respectively for 3, 4,
+ * 		and 5 symbols), but that leaves no room to store variants of
+ * 		canonicalized trees and supporting those would immediately
+ * 		require an extra bit somewhere that would negate the benefits.
+ * 		By storing all possible values from 2 to 11, we have 6 values
+ * 		left for extensions into canonicalized trees.
+ */
+
+/*
+ * Node count can range from 2 to 1024.
+ * 		000xxx (8-15) -> 2-9
+ * 		001xxxx (16-31) -> 10-25
+ * 		010xxxxx (32-63) -> 26-57
+ * 		...
+ * 		111xxxxxxxxxx (1024-2047) -> 1018-2041
+ * Note: there should be ways to use smaller storage for node counts
+ * 		when it's known that the symbol range is shorter.
+ */
+
+/* Write Huffman tree */
+void huffman_write_tree(huffman *const that, bitstream *const stream) {
+	if (verbosity >= VERB_EXTRA) {
+		printf("Huffman processor for %ld nodes\n", that -> symbols_present - 1);
+		printf("Huffman processor for %ld symbols\n", that -> input_symbol_max - that -> input_symbol_min + 1);
+		long t = that -> input_symbol_max - that -> input_symbol_min + that -> symbols_present - 1;
+		printf("Huffman nodes have %ld possible values\n", t);
+		long bits = 0;
+		while (t) {
+			bits++;
+			t >>= 1;
+		}
+		printf("Huffman nodes need %ld bits per entry, %ld bits per node\n", bits, 2 * bits);
+		printf("Huffman tree needs %ld bits\n", 2 * bits * (that -> symbols_present - 1));
+		printf("\n");
+		printf("Huffman node entry bit size %ld\n", bits);
+		printf("Huffman node count %ld\n", that -> symbols_present - 1);
+		printf("Huffman symbol offset %ld\n", that -> input_symbol_min);
+	}
+}

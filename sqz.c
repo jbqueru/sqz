@@ -39,6 +39,11 @@ int main(int argc, char** argv) {
 	huffman_count_symbols_present(h);
 	huffman_build_tree(h);
 	huffman_build_codes(h);
+
+	bitstream* s = bitstream_construct();
+
+	huffman_write_tree(h, s);
+
 	huffman_destruct(h);
 	free(pixels);
 	return EXIT_SUCCESS;
