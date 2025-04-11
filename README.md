@@ -365,6 +365,106 @@ the number of distinct symbols and the size of the input.
 
 ### Canonical Huffman
 
+## LZ78 family (including LZW sub-family)
+
+The family is essentially split in two, with plain LZ78 on one side
+storing unmatched symbols in the stream, while LZW seeds the dictionary
+with all possible symbols such that no symbol can be unmatched. The
+two approaches potentially have pros and cons, and therefore neither
+should be ruled away off-hand.
+
+LZ78 can easily be combined with a Huffman stage for the unmatched
+symbols.
+
+### Dealing with a full dictionary
+
+There are multiple approaches to handle a full dictionary:
+    -stop adding to the dictionary (the default LZW behavior)
+    -clear the whole dictionary (explicit in LZW, implicit in LZC)
+    -remove the LRU entry (used in LZT)
+    -remove one unreferenced entry (used in BTLZ)
+    -remove all unreferenced entries (used in LZJ)
+
+LZW has a command to clear the dictionary on demand, which requires
+the encoder to make a complex decision.
+
+LZC discards the dictionary when compression becomes poor, which
+requires an arbitrary parameter that needs to be pre-agreed on.
+
+### Adding to the dictionary
+
+There are also multiple approaches about creating new dictionary
+entries:
+    -with a single new character (used in most schemes, including
+    plain LZ78 and LZW)
+    -as a concatenation of two entries (LZMW)
+    -as a concatenation of the first entry with all prefixes of a
+    second entry (LZAP)
+    -with a large range of substrings, which makes the set of
+    possible matches resemble that of LZ77 (LZJ)
+
+The LZW approach is a narrow subset of LZAP, where only
+the smallest prefix is used, while the LZMW approach is the other
+narrow subset where only the longest prefix is used.
+
+### Thoughts on single-character adds
+
+Adding a single character to the dictionary, as done by LZ78 and LZW,
+might have some unexpected effects: if a sequence of characters tends
+to repeat but is originally matched by two dictionary entries, the
+first occurrence will create a slightly longer dictionary entry for
+the prefix, and a greedy match at the next occurrence will match one
+more symbol, using the longer recent dictionary entry but then missing
+an opportunity to re-use a second entry, having matched one character
+too many.
+
+One approach is to add an entry for the matching suffix of the second
+entry.
+
+Another approach is to be slightly less greedy, and to optionally match
+one fewer characters than optimal, by doing a lookahead on the next
+match.
+
+### Literal symbol runs
+
+In their original form, both LZ77 and LZ78 alternate exactly one match
+(which could be empty) and a single literal symbol.
+
+In the LZ77 family, multiple options have been explored to break that
+requirement, including LZSS and deflate. In those cases indeed, how
+the symbols are decoded doesn't matter for future decoding since the
+only state is the output, and those formats allow multiple matches
+in a row without any literal symbol, as well as multiple literal
+symbols in a row without any matches.
+
+In the LZ78 family, building the dictionary is an important aspect.
+A sequence of unmatched symbols would use entry 0 (empty) between
+the symbols, but each symbol would only ever appear once in such
+a context, since there would later be a dictionary entry containing
+exactly that symbol, and referencing that dictionary entry is
+important as it creates a two-character entry, and so on. As a result,
+in LZ78, unmatched solitary symbols only ever appear once, and
+attempting to reduce references to those also reduces the opportunities
+to create new dictionary entries.
+
+Instead, it might make sense to apply some partial Huffman coding to
+the earlier entries in the dictionary, which are the shorter ones and
+therefore are more likely to appear often. The cutoff between Huffman
+and literal coding is a potential parameter, to be researched.
+
+### Encoder/decoder implementation
+
+While literature tends to describe the encoder and decoder for
+LZ78/LZW as using a dictionary and constructing it the same way,
+reality is slightly different: during encoding, it's very natural
+to contruct a trie, while decoding is probably happening with a
+tree that can only be navigated toward the root.
+
+This is where LZMW becomes odd. The encoding isn't a pure trie
+any more, because some nodes in the trie woudln't match any
+dictionary entries, while at decoding time the data structure
+evolves from a tree to a DAG.
+
 # Atari ST
 
 ## Known image file formats
