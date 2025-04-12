@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "exitcodes.h"
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,9 +32,46 @@ lz78encoder* lz78encoder_construct() {
 		fprintf(stderr, FL "Can't allocate lz78encoder structure (%zu bytes)\n", sizeof (lz78encoder));
 		exit(EXIT_MEMORY);
 	}
+	that -> input_symbol_min = LONG_MAX;
+	that -> input_symbol_max = LONG_MIN;
 	return that;
 }
 
 void lz78encoder_destruct(lz78encoder *const that) {
 	free(that);
+}
+
+void lz78encoder_compute_symbol_range(
+			lz78encoder *const that,
+			long const *const symbols,
+			long const symbol_count) {
+	for (long i = 0; i < symbol_count; i++) {
+		if (symbols[i] < that -> input_symbol_min) {
+			that -> input_symbol_min = symbols[i];
+		}
+		if (symbols[i] > that -> input_symbol_max) {
+			that -> input_symbol_max = symbols[i];
+		}
+	}
+	printf("min symbol %ld max symbol %ld\n",
+				that -> input_symbol_min,
+				that -> input_symbol_max);
+}
+
+void lz78encoder_find_matches(
+			lz78encoder *const that,
+			long const *const symbols,
+			long const symbol_count) {
+	lz78trie* root = lz78encoder_construct_trie(that);
+	long i = 0;
+	while (i < symbol_count) {
+		printf("looking for match for symbol at offset %ld\n", i);
+		if (root->next_level[symbols[i]]) {}
+		i++;
+	}
+}
+
+lz78trie* lz78encoder_construct_trie(lz78encoder *const that) {
+	lz78trie* ret = calloc(1, sizeof(lz78trie) + (that -> input_symbol_max - that -> input_symbol_min) * sizeof(lz78trie*));
+	return ret;
 }

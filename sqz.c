@@ -23,6 +23,7 @@
 #include "degas.h"
 #include "exitcodes.h"
 #include "huffman.h"
+#include "lz78.h"
 
 #include <limits.h>
 #include <stdio.h>
@@ -33,6 +34,12 @@ int main(int argc, char** argv) {
 	parse_cmdline(argc, argv);
 	long* pixels = NULL;
 	pixels = read_pi1(cmdline_inputfilename);
+
+	lz78encoder* lz78 = lz78encoder_construct();
+	lz78encoder_compute_symbol_range(lz78, pixels, 64000);
+	lz78encoder_find_matches(lz78, pixels, 64000);
+
+/*
 	huffman* h = huffman_construct();
 	huffman_compute_symbol_range(h, pixels, 64000);
 	huffman_compute_symbol_counts(h, pixels, 64000);
@@ -48,6 +55,7 @@ int main(int argc, char** argv) {
 	}
 
 	huffman_destruct(h);
+*/
 	free(pixels);
 	return EXIT_SUCCESS;
 }

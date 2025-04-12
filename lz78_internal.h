@@ -23,7 +23,14 @@
 #include "lz78.h"
 
 struct lz78encoder {
-    long _;
+    long input_symbol_min;
+    long input_symbol_max;
 };
+
+typedef struct lz78trie {
+    struct lz78trie* next_level[1];
+} lz78trie;
+
+lz78trie* lz78encoder_construct_trie(lz78encoder *const that);
 
 #endif /* LZ78_INTERNAL_H_INCLUDED */

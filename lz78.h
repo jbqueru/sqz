@@ -30,6 +30,16 @@ typedef struct lz78encoder lz78encoder;
 
 lz78encoder* lz78encoder_construct();
 
-void lz78encoder_destruct(lz78encoder*);
+void lz78encoder_destruct(lz78encoder *const that);
+
+void lz78encoder_compute_symbol_range(
+    lz78encoder *const that,
+    long const *const symbols,
+    long const symbol_count);
+
+void lz78encoder_find_matches(
+    lz78encoder *const that,
+    long const *const symbols,
+    long const symbol_count);
 
 #endif /* LZ78_H_INCLUDED */
