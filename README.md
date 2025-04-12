@@ -425,6 +425,10 @@ Another approach is to be slightly less greedy, and to optionally match
 one fewer characters than optimal, by doing a lookahead on the next
 match.
 
+This is where LZMW has an adge: it avoids situations where a greedy
+match catches exactly one symbol too many and misses the next match
+opportunity
+
 ### Literal symbol runs
 
 In their original form, both LZ77 and LZ78 alternate exactly one match
@@ -465,6 +469,71 @@ any more, because some nodes in the trie woudln't match any
 dictionary entries, while at decoding time the data structure
 evolves from a tree to a DAG.
 
+### LZ78 fileformat
+
+Stream style:
+```
+0 = LZ78-style (with literal symbols in stream)
+1 = LZW-style (with dictionary initialized with all symbols)
+```
+TODO: might be entirely different top-level formats
+
+Full-dictionary handling:
+```
+00: Clear LRU entry (like in LZT)
+01: Clear one leaf entry, round-robin (like in BTLZ)
+10: Clear all leaf entries (like in LZAP)
+110: Clear all entries
+111: Keep dictonary full, stop adding
+```
+TODO: if there's a clear winner, possibly move encoding to 1-2-3-4-4 bits.
+TOOD: use explicit clears for all styles, or only on keep full?
+
+New entry creation, LZW-style:
+```
+-0 append first character of next match (like LZW)
+-10 append all of next match (like LZMW)
+-11 append all prefixes of next match (like LZAP)
+```
+
+Extra entry creation, for single-symbol scenarios:
+```
+0: no extra entry
+1: also add longest suffix of current match, if long enough
+```
+
+Literal symbol encoding (LZ78-style):
+```
+0: plain
+1: Huffman
+```
+
+Dictionary entry encoding:
+```
+0: plain
+10: partial Huffman, keep for whle document
+11: partial Huffman, new code on dictionary reset
+```
+
+Magic values (TBD):
+```
+0: empty dictionary entry, EOF in LZW-style
+1: clear dictionary
+2: EOF in LZ78 style
+```
+TODO: study more.
+LZW could use 0 for clear and 0-0 for EOF.
+LZ78 has to have dedicated entries for clear, for EOF.
+LZ78 could use max_entry + 1 for EOF, which requires early change.
+Clear might only be needed when the dictionary doesn't clear itself.
+
+Simplest approach, works in all cases
+```
+0 = empty
+1 = EOF
+2 = clear
+```
+
 # Atari ST
 
 ## Known image file formats
@@ -486,11 +555,13 @@ Encoding information:
 
 # Other computers
 
-Amstrad CPC: A (QA1, QA2, QA3, QAI)
+Atari 8-bit: A
 BBC micro: B
-C64: C
-Amiga: G
+Amstrad CPC: C
+Amiga: L (Lorraine)
 Generic: Q (SQI)
+TI 99/4A: N
 (ST: S)
 Thomson: T
+C64: V (VIC)
 ZX Spectrum: Z
