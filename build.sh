@@ -30,7 +30,21 @@ echo '(*) run bitstream tests'
 out/bin/test_bitstream || exit $?
 
 echo '(*) build Squeezer tool'
-gcc sqz.c bitstream.c cmdline.c debug.c degas.c exitcodes.c huffman.c -O2 -Wall -Wextra -o out/bin/sqz || exit $?
+gcc \
+sqz.c \
+\
+cmdline.c \
+debug.c \
+exitcodes.c \
+\
+bitstream.c \
+\
+degas.c \
+\
+huffman.c \
+lz78.c \
+\
+-O2 -Wall -Wextra -o out/bin/sqz || exit $?
 
 #echo '(*) run Squeezer tool'
 #out/bin/sqz out/tos/VMAX.PI1 || exit $?
