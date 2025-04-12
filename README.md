@@ -534,6 +534,26 @@ Simplest approach, works in all cases
 2 = clear
 ```
 
+Literal size for non-Huffman LZ78 case, unless known otherwise:
+```
+000: 3 bits
+001: 4 bits
+010: 5 bits
+011: 6 bits
+100: 7 bits
+101: 8 bits
+110: 9 bits
+111: 10 bits
+```
+
+Max dictionary entry size:
+```
+00: 8 bits
+01: 10 bits
+10: 12 bits
+11: 14 bits
+```
+
 # Atari ST
 
 ## Known image file formats
