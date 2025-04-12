@@ -554,6 +554,8 @@ Max dictionary entry size:
 11: 14 bits
 ```
 
+TODO: case where symbols aren't zero-based.
+
 # Atari ST
 
 ## Known image file formats
