@@ -28,6 +28,7 @@ struct lz78encoder {
 };
 
 typedef struct lz78trie {
+    long node_id;
     struct lz78trie* next_level[1];
 } lz78trie;
 

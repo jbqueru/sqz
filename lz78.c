@@ -62,9 +62,9 @@ void lz78encoder_find_matches(
 			lz78encoder *const that,
 			long const *const symbols,
 			long const symbol_count) {
-	lz78trie* root = lz78encoder_construct_trie(that);
-	long i = 0;
-	while (i < symbol_count) {
+	lz78trie *const root = lz78encoder_construct_trie(that);
+	long next_node = 3;
+	for (long i = 0; i < symbol_count; i++) {
 		lz78trie* search = root;
 		printf("looking for match for symbol %ld at offset %ld\n", symbols[i], i);
 		while (i < symbol_count && search -> next_level[symbols[i - that -> input_symbol_min]]) {
@@ -72,13 +72,16 @@ void lz78encoder_find_matches(
 			search = search -> next_level[symbols[i - that -> input_symbol_min]];
 			i++;
 		}
-		search -> next_level[symbols[i - that -> input_symbol_min]] = lz78encoder_construct_trie(that);
+		printf("outputing node %ld\n", search -> node_id);
+		printf("creating node %ld\n", next_node);
+		lz78trie *const next = lz78encoder_construct_trie(that);
+		next -> node_id = next_node++;
+		search -> next_level[symbols[i - that -> input_symbol_min]] = next;
 		if (i < symbol_count) {
 			printf("outputing literal at offset %ld\n", i);
 		} else {
 			printf("outputing EOF\n");
 		}
-		i++;
 	}
 }
 
