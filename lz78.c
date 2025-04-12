@@ -64,16 +64,16 @@ void lz78encoder_find_matches(
 			long const symbol_count) {
 	lz78trie* root = lz78encoder_construct_trie(that);
 	long i = 0;
-	while (i < 22) {
+	while (i < symbol_count) {
 		lz78trie* search = root;
 		printf("looking for match for symbol %ld at offset %ld\n", symbols[i], i);
-		while (i < 22 && search -> next_level[symbols[i - that -> input_symbol_min]]) {
+		while (i < symbol_count && search -> next_level[symbols[i - that -> input_symbol_min]]) {
 			printf("found partial match for offset %ld\n", i);
 			search = search -> next_level[symbols[i - that -> input_symbol_min]];
 			i++;
 		}
 		search -> next_level[symbols[i - that -> input_symbol_min]] = lz78encoder_construct_trie(that);
-		if (i < 22) {
+		if (i < symbol_count) {
 			printf("outputing literal at offset %ld\n", i);
 		} else {
 			printf("outputing EOF\n");
