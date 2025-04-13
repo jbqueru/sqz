@@ -72,7 +72,13 @@ void lz78encoder_find_matches(
 			search = search -> next_level[symbols[i - that -> input_symbol_min]];
 			i++;
 		}
-		printf("outputing node %ld\n", search -> node_id);
+		printf("outputing node %ld", search -> node_id);
+		for (int i = 0; i < 64; i++) {
+			if (!((next_node - 1) & (LONG_MAX << i))) {
+				printf(" with %d bits\n", i);
+				break;
+			}
+		}
 		printf("creating node %ld\n", next_node);
 		lz78trie *const next = lz78encoder_construct_trie(that);
 		next -> node_id = next_node++;
