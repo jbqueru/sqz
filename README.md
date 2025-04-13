@@ -469,6 +469,24 @@ any more, because some nodes in the trie woudln't match any
 dictionary entries, while at decoding time the data structure
 evolves from a tree to a DAG.
 
+### Ending a stream
+
+In the LZW family, ending a file is easy: since the coded stream
+only has references to dictionary entries, one entry must mark the
+end of the strea. It turns out, entry 0 (the root entry) does the
+job perfectly, since it's never used in the regular stream.
+
+In the LZ78 family, it's a little bit more subtle: entry 0 is
+perfectly valid in the stream. One approach could be to add a
+special literal symbol, though it's potentially somewhat
+costly. Adding a special dictionary entry would work for that
+use case, however, in that case, the stream has one more
+dictionary entry than literal symbol. That's still an easier
+approach, and is easier to unify with LZW.
+
+In some cases, the length of the output will be known ahead of
+time. In that case, there's no need to output any EOF marker.
+
 ### LZ78 fileformat
 
 Stream style:
