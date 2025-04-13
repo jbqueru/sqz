@@ -595,26 +595,23 @@ NEO, PI1, PI2, PI3, PC1, PC2, PC3, IFF, SPU, SPC, KID, CA1, CA2, CA3
 
 ## Squeezer image file format
 
-Extensions: QS1, QS2, QS3, QSI
+Extensions: QS1 through QS9
 
-2 bits: 00-01-10 standard resolutions 11 custom
+QS1 starts with a palette, up to 16 colors of 9 bits each (512 colors)
+15 bits indicate presence of colors 1-15 (0 is always present)
 
-For standard color resolutions, 1 bit for palette depth
-(0 = ST, 1 = STe), then the right number of bits to specify
-what is present, then the palette entries, packed RGB MSB.
-
-Encoding information:
+Palette size indicates symbol size and count.
 
 
 # Other computers
 
 Atari 8-bit: A
 BBC micro: B
-Amstrad CPC: C
-Amiga: L (Lorraine)
-Generic: Q (SQI)
+Amstrad CPC: C (QC1 to QC3 for plain CPC, QC4 to QC6 for CPC Plus)
+Amiga: G or L (Lorraine)
+Thomson MO/TO: M
 TI 99/4A: N
-(ST: S)
-Thomson: T
+Generic: Q (SQI)
+Atari ST: S (QS1 to QS3 for ST, QS4 to QS9 for TT, QS4 and QS5 are STe modes)
 C64: V (VIC)
 ZX Spectrum: Z
