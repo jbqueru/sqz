@@ -38,6 +38,10 @@ lz78encoder* lz78encoder_construct() {
 }
 
 void lz78encoder_destruct(lz78encoder *const that) {
+	if (that) {
+		free(that -> stream_nodes);
+		free(that -> stream_symbols);
+	}
 	free(that);
 }
 
