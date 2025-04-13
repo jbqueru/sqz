@@ -42,6 +42,33 @@ bitstream* bitstream_construct() {
 	return that;
 }
 
+bitstream* bitstream_construct_from_file(char const *const filename) {
+	bitstream* that = (bitstream*) malloc(sizeof (bitstream));
+	if (!that) {
+		fprintf(stderr, FL "Can't allocate bitstream structure (%zu bytes)\n", sizeof (bitstream));
+		exit(EXIT_MEMORY);
+	}
+
+	FILE* inputfile = fopen(filename, "rb");
+	fseek(inputfile, 0, SEEK_END);
+	long filesize = ftell(inputfile);
+	fseek(inputfile, 0, SEEK_SET);
+
+	that -> array = malloc(filesize);
+	that -> allocated = filesize;
+	if (fread(that -> array, 1, filesize, inputfile) < (size_t)filesize) {
+		fprintf(stderr, FL "Can't read file %s\n", filename);
+		exit (EXIT_INPUTFILE);
+	}
+
+	that -> size = filesize * CHAR_BIT;
+	that -> current = 0;
+
+	fclose(inputfile);
+	return that;
+}
+
+
 void bitstream_destruct(bitstream *const that) {
 	if (that -> array) {
 		free(that -> array);
@@ -59,6 +86,16 @@ size_t bitstream_byte_size(bitstream *const that) {
 
 unsigned char const * bitstream_byte_array(bitstream *const that) {
 	return that -> array;
+}
+
+int bitstream_read_bit(bitstream *const that) {
+	if (that -> current == that -> size) {
+		return -1;
+	}
+	size_t byte_offset = that -> current / CHAR_BIT;
+	int ret = (that -> array[byte_offset] & (1U << (CHAR_BIT - 1 - that -> current % CHAR_BIT))) != 0;
+	that -> current++;
+	return ret;
 }
 
 void bitstream_write_bit(bitstream *const that, int bit) {

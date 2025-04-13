@@ -27,6 +27,7 @@ const int EXIT_CMDLINE = 2;
 const int EXIT_INPUTFILE = 3;
 const int EXIT_OUTPUTFILE = 4;
 const int EXIT_INVALIDSTATE = 5;
+const int EXIT_IMPLEMENTATION = 6;
 
 void display_help_exitcodes() {
     printf("Exit codes:\n");
@@ -36,4 +37,5 @@ void display_help_exitcodes() {
     printf("3: I/O error on input file\n");
     printf("4: I/O error on output file\n");
     printf("5: invalid internal state\n");
+    printf("6: implementation issue\n");
 }

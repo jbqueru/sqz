@@ -26,6 +26,7 @@ extern const int EXIT_CMDLINE;
 extern const int EXIT_INPUTFILE;
 extern const int EXIT_OUTPUTFILE;
 extern const int EXIT_INVALIDSTATE;
+extern const int EXIT_IMPLEMENTATION;
 
 void display_help_exitcodes();
 

@@ -17,12 +17,27 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+// private headers (in alphabetical order)
 #include "bitstream.h"
 #include "debug.h"
 #include "exitcodes.h"
 #include "ucmdline.h"
 
+// public headers (in alphabetical order)
+#include <stdio.h>
+#include <stdlib.h>
+
 int main(int argc, char** argv) {
 	parse_cmdline(argc, argv);
+
+	bitstream* bs = bitstream_construct_from_file(cmdline_inputfilename);
+
+	switch(cmdline_compressed_format) {
+		case FORMAT_QS1:
+			break;
+		default:
+			fprintf(stderr, FL "no handler for format %d\n", (int)cmdline_compressed_format);
+			exit(EXIT_IMPLEMENTATION);
+	}
 	return EXIT_SUCCESS;
 }

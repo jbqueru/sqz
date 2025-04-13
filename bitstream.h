@@ -26,6 +26,8 @@ typedef struct bitstream bitstream;
 
 bitstream* bitstream_construct();
 
+bitstream* bitstream_construct_from_file(char const *const filename);
+
 void bitstream_destruct(bitstream *const that);
 
 size_t bitstream_bit_size(bitstream *const that);
@@ -33,6 +35,8 @@ size_t bitstream_bit_size(bitstream *const that);
 size_t bitstream_byte_size(bitstream *const that);
 
 unsigned char const * bitstream_byte_array(bitstream *const that);
+
+int bitstream_read_bit(bitstream *const that);
 
 void bitstream_write_bit(bitstream *const that, int bit);
 
