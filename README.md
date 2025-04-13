@@ -516,6 +516,19 @@ Dictionary entry encoding:
 ```
 
 Magic values (TBD):
+
+In LZW, the magic values must be node ids, since that's the only
+data type in the stream. Entry 0 never appeas in the stream, so
+it makes a natural EOF entry. Entry 1 then makes a natural CLEAR
+entry when needed (TBD).
+
+In LZ78, things get more complicated. If the EOF marker is a node
+value, the last symbol of the stream can't be used in a match
+(so that the stream ends on a literal symbol). If the EOF marker is
+a symbol value, it's easier to manage the end of the stream, but that
+requires one extra symbol value, which would be unfortunate in situations
+where that requires to increase the symbol size, especially in non-Huffman
+situations.
 ```
 0: empty dictionary entry, EOF in LZW-style
 1: clear dictionary
