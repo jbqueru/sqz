@@ -600,7 +600,7 @@ Extensions: QS1 through QS9
 QS1 starts with a palette, up to 16 colors of 9 bits each (512 colors)
 15 bits indicate presence of colors 1-15 (0 is always present)
 
-Palette size indicates symbol size and count.
+Palette size implies symbol size and count.
 
 
 # Other computers

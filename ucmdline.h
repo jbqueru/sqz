@@ -22,8 +22,8 @@
 
 typedef enum {
     FORMAT_UNDEFINED = 0,
-    FORMAT_IMPLICIT,
-    FORMAT_QS1,
+    FORMAT_IMPLICIT = 1,
+    FORMAT_QS1 = 2,
 } compressed_format;
 
 extern char* cmdline_inputfilename;

@@ -17,12 +17,15 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+// The header that matches this souce file
 #include "ucmdline.h"
 
+// Other private headers we use, in alphabetical order
 #include "debug.h"
 #include "exitcodes.h"
 #include "license.h"
 
+// Public headers we use, in alphabetical order
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -134,9 +137,29 @@ void parse_cmdline(int argc, char** argv) {
 		display_license();
 		printf("\n");
 	}
-	if (verbosity >= VERB_EXTRA) {
+	if (verbosity >= VERB_VERBOSE) {
 		printf("input filename : %s\n", cmdline_inputfilename);
 		printf("output filename : %s\n", cmdline_outputfilename);
+	}
+	if (cmdline_compressed_format <= FORMAT_IMPLICIT) {
+		size_t filename_length = strlen(cmdline_inputfilename);
+		if (filename_length <= 4) {
+			fprintf(stderr, "no format specified, filename too short to guess: %s\n", cmdline_inputfilename);
+			exit(EXIT_CMDLINE);
+		}
+		if (!strcasecmp(cmdline_inputfilename + filename_length - 4, ".qs1")) {
+			cmdline_compressed_format = FORMAT_QS1;
+		}
+		if (cmdline_compressed_format <= FORMAT_IMPLICIT) {
+			fprintf(stderr, "no format specified, cound not guess from filename: %s\n", cmdline_inputfilename);
+			exit(EXIT_CMDLINE);
+		}
+	}
+	if (verbosity >= VERB_VERBOSE) {
+		switch(cmdline_compressed_format) {
+			case FORMAT_QS1: printf("format: QS1 (Atari ST low-resolution)\n"); break;
+			default: break;
+		}
 	}
 }
 
