@@ -26,6 +26,5 @@ extern char* cmdline_outputfilename;
 void parse_cmdline(int argc, char** argv);
 void display_version();
 void display_help();
-void display_license();
 
 #endif /* CMDLINE_H_INCLUDED */

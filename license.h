@@ -17,18 +17,9 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#ifdef CMDLINE_H_INCLUDED
-#error Cannot use cmdline.h and ucmdline.h together
-#endif
+#ifndef LICENSE_H_INCLUDED
+#define LICENSE_H_INCLUDED
 
-#ifndef UCMDLINE_H_INCLUDED
-#define UCMDLINE_H_INCLUDED
+void display_license();
 
-extern char* cmdline_inputfilename;
-extern char* cmdline_outputfilename;
-
-void parse_cmdline(int argc, char** argv);
-void display_version();
-void display_help();
-
-#endif /* UCMDLINE_H_INCLUDED */
+#endif /* LICENSE_H_INCLUDED */

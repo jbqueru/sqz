@@ -36,6 +36,7 @@ sqz.c \
 cmdline.c \
 debug.c \
 exitcodes.c \
+license.c \
 \
 bitstream.c \
 \
@@ -53,6 +54,7 @@ unsqz.c \
 ucmdline.c \
 debug.c \
 exitcodes.c \
+license.c \
 \
 bitstream.c \
 \
