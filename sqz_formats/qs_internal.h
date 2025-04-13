@@ -17,27 +17,9 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#include "exitcodes.h"
+#ifndef SQZQS_INTERNAL_H_INCLUDED
+#define SQZQS_INTERNAL_H_INCLUDED
 
-#include <stdio.h>
+#include "qs.h"
 
-const int EXIT_SUCCESS = 0;
-const int EXIT_MEMORY = 1;
-const int EXIT_CMDLINE = 2;
-const int EXIT_INPUTFILE = 3;
-const int EXIT_OUTPUTFILE = 4;
-const int EXIT_BADFILE = 5;
-const int EXIT_INVALIDSTATE = 6;
-const int EXIT_IMPLEMENTATION = 7;
-
-void display_help_exitcodes() {
-    printf("Exit codes:\n");
-    printf("0: success\n");
-    printf("1: memory allocaton failure\n");
-    printf("2: invalid command line\n");
-    printf("3: I/O error on input file\n");
-    printf("4: I/O error on output file\n");
-    printf("5: bad file format\n");
-    printf("6: invalid internal state\n");
-    printf("7: implementation issue\n");
-}
+#endif /* SQZQS_INTERNAL_H_INCLUDED */

@@ -597,8 +597,14 @@ NEO, PI1, PI2, PI3, PC1, PC2, PC3, IFF, SPU, SPC, KID, CA1, CA2, CA3
 
 Extensions: QS1 through QS9
 
-QS1 starts with a palette, up to 16 colors of 9 bits each (512 colors)
-15 bits indicate presence of colors 1-15 (0 is always present)
+QS1 format: start with palette.
+
+16 times:
+1 bit:
+0: palette entry not used in pixel data
+1: palette entry used in pixel data
+if palette entry used (color 0, or bit set to 1)
+9 bits: RRRGGGBBB
 
 Palette size implies symbol size and count.
 
