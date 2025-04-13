@@ -85,11 +85,12 @@ void lz78encoder_find_matches(
 }
 
 void lz78encoder_output_entry(lz78encoder* const that, long const node_id, long const symbol) {
-	that -> stream_length++;
-	that -> stream_nodes = realloc(that -> stream_nodes, that -> stream_length * sizeof (long));
-	that -> stream_nodes[that -> stream_length - 1] = node_id;
-	that -> stream_symbols = realloc(that -> stream_symbols, that -> stream_length * sizeof (long));
-	that -> stream_symbols[that -> stream_length - 1] = symbol;
+	that -> stream_num_nodes++;
+	that -> stream_nodes = realloc(that -> stream_nodes, that -> stream_num_nodes * sizeof (long));
+	that -> stream_nodes[that -> stream_num_nodes - 1] = node_id;
+	that -> stream_num_symbols++;
+	that -> stream_symbols = realloc(that -> stream_symbols, that -> stream_num_symbols * sizeof (long));
+	that -> stream_symbols[that -> stream_num_symbols - 1] = symbol;
 }
 
 lz78trie* lz78encoder_construct_trie(lz78encoder *const that) {

@@ -25,7 +25,8 @@
 struct lz78encoder {
     long input_symbol_min;
     long input_symbol_max;
-    long stream_length;
+    long stream_num_nodes;
+    long stream_num_symbols;
     long* stream_nodes;
     long* stream_symbols;
 };
