@@ -25,7 +25,12 @@
 struct lz78encoder {
     long input_symbol_min;
     long input_symbol_max;
+    long stream_length;
+    long* stream_nodes;
+    long* stream_symbols;
 };
+
+void lz78encoder_output_entry(lz78encoder* const that, long const node_id, long const symbol);
 
 typedef struct lz78trie {
     long node_id;
