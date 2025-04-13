@@ -20,11 +20,18 @@
 #ifndef UCMDLINE_H_INCLUDED
 #define UCMDLINE_H_INCLUDED
 
+typedef enum {
+    FORMAT_UNDEFINED = 0,
+    FORMAT_IMPLICIT,
+    FORMAT_QS1,
+} compressed_format;
+
 extern char* cmdline_inputfilename;
 extern char* cmdline_outputfilename;
+extern compressed_format cmdline_compressed_format;
 
 void parse_cmdline(int argc, char** argv);
 void display_version();
-void display_help();
+void display_help(char const *const program_name);
 
 #endif /* UCMDLINE_H_INCLUDED */

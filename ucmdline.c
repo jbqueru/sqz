@@ -17,7 +17,7 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#include "cmdline.h"
+#include "ucmdline.h"
 
 #include "debug.h"
 #include "exitcodes.h"
@@ -29,6 +29,7 @@
 
 char* cmdline_inputfilename;
 char* cmdline_outputfilename;
+compressed_format cmdline_compressed_format;
 
 void parse_cmdline(int argc, char** argv) {
 	cmdline_inputfilename = NULL;
@@ -37,7 +38,7 @@ void parse_cmdline(int argc, char** argv) {
 	if (argc == 1) {
 		display_version();
 		printf("\n");
-		display_help();
+		display_help(argv[0]);
 		exit(EXIT_CMDLINE);
 	}
 	for (int i = 1; i < argc; i++) {
@@ -54,7 +55,7 @@ void parse_cmdline(int argc, char** argv) {
 				fprintf(stderr, "--help can't be used with other options\n");
 				exit(EXIT_CMDLINE);
 			}
-			display_help();
+			display_help(argv[0]);
 			exit(EXIT_SUCCESS);
 		}
 
@@ -70,6 +71,28 @@ void parse_cmdline(int argc, char** argv) {
 			verbosity = VERB_EXTRA;
 			continue;
 		}
+		if (!strcmp(argv[i], "--format")) {
+			i++;
+			if (i >= argc) {
+				fprintf(stderr, "--format specified without format\n");
+				exit(EXIT_CMDLINE);
+			}
+			if (cmdline_compressed_format) {
+				fprintf(stderr, "Multiple input formats found: %s\n", argv[i]);
+				exit(EXIT_CMDLINE);
+			}
+			if (!strcmp(argv[i], "implicit")) {
+				cmdline_compressed_format = FORMAT_IMPLICIT;
+			}
+			if (!strcmp(argv[i], "qs1")) {
+				cmdline_compressed_format = FORMAT_QS1;
+			}
+			if (!cmdline_compressed_format) {
+				fprintf(stderr, "Unrecognized input format: %s\n", argv[i]);
+				exit(EXIT_CMDLINE);
+			}
+			continue;
+		}
 		if (!strcmp(argv[i], "--output")) {
 			i++;
 			if (i >= argc) {
@@ -79,14 +102,13 @@ void parse_cmdline(int argc, char** argv) {
 			if (cmdline_outputfilename) {
 				fprintf(stderr, "Multiple output filenames found: %s\n", argv[i]);
 				exit(EXIT_CMDLINE);
-			} else {
-				cmdline_outputfilename = strdup(argv[i]);
-				if (!cmdline_outputfilename) {
-					fprintf(stderr, FL"Could not allocate output filename\n");
-					exit(EXIT_MEMORY);
-				}
-				continue;
 			}
+			cmdline_outputfilename = strdup(argv[i]);
+			if (!cmdline_outputfilename) {
+				fprintf(stderr, FL"Could not allocate output filename\n");
+				exit(EXIT_MEMORY);
+			}
+			continue;
 		}
 
 		if (argv[i][0] == '-') {
@@ -119,14 +141,16 @@ void parse_cmdline(int argc, char** argv) {
 }
 
 void display_version() {
-	printf("Squeezer version 0.0 (devel)\n");
+	printf("Unsqueezer version 0.0 (devel)\n");
 	printf("\n");
-	printf("A compression program for retrocomputing use cases\n");
+	printf("A decompression program for retrocomputing use cases\n");
 	printf("\n");
 	display_license();
 }
 
-void display_help() {
+void display_help(char const *const program_name) {
+	printf("Usage: %s <inputfile> [option...]\n", program_name);
+	printf("\n");
 	printf("Command-line options:\n");
 	printf("--help: print this help message to stdout\n");
 	printf("--version: print version information to stdout\n");
@@ -135,5 +159,7 @@ void display_help() {
 	printf("--verbose: additional output\n");
 	printf("--extraverbose: even more additional output\n");
 	printf("\n");
+	printf("--format\n");
+	printf("--output\n");
 	display_help_exitcodes();
 }
