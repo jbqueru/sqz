@@ -567,14 +567,16 @@ Simplest approach, works in all cases
 
 Literal size for non-Huffman LZ78 case, unless known otherwise:
 ```
-000: 3 bits
-001: 4 bits
-010: 5 bits
-011: 6 bits
-100: 7 bits
-101: 8 bits
-110: 9 bits
-111: 10 bits
+000: 1 bit
+001: 2 bits
+010: 3 bits
+011: 4 bits
+100: 5 bits
+101: 6 bits
+1100: 7 bits
+1101: 8 bits
+1110: 9 bits
+1111: 10 bits
 ```
 
 Max dictionary entry size:
