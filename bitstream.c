@@ -98,6 +98,19 @@ int bitstream_read_bit(bitstream *const that) {
 	return ret;
 }
 
+long bitstream_read_value(bitstream *const that, int numbits) {
+	long ret = 0;
+	for (int i = 0; i < numbits; i++) {
+		int bit = bitstream_read_bit(that);
+		if (bit == -1) {
+			return bit;
+		}
+		ret <<= 1;
+		ret |= (bit != 0);
+	}
+	return ret;
+}
+
 void bitstream_write_bit(bitstream *const that, int bit) {
 	if (that -> current + 1 > that -> size) {
 		that -> size++;

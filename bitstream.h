@@ -38,7 +38,9 @@ unsigned char const * bitstream_byte_array(bitstream *const that);
 
 int bitstream_read_bit(bitstream *const that);
 
-void bitstream_write_bit(bitstream *const that, int bit);
+long bitstream_read_value(bitstream *const that, int numbits);
+
+    void bitstream_write_bit(bitstream *const that, int bit);
 
 void bitstream_write_value(bitstream *const that, long value, int numbits);
 

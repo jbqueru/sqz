@@ -42,43 +42,33 @@ void process_qs1(bitstream *const stream) {
 			printf("QS1: color %d %spresent", i, bit ? "" : "not ");
 		}
 		if (i == 0 || bit) {
-			unsigned char c = 0;
-			for (int j = 0 ; j < 3 ; j++) {
-				bit = bitstream_read_bit(stream);
-				if (bit < 0) {
-					fprintf(stderr, "invalid QS1 file, missing palette information\n");
-					exit(EXIT_BADFILE);
-				}
-				c <<= 1;
-				c |= bit;
+			long c;
+			c = bitstream_read_value(stream, 3);
+			if (c < 0) {
+				fprintf(stderr, "invalid QS1 file, missing palette information\n");
+				exit(EXIT_BADFILE);
 			}
 			palette_red[i] = c;
-			c = 0;
-			for (int j = 0 ; j < 3 ; j++) {
-				bit = bitstream_read_bit(stream);
-				if (bit < 0) {
-					fprintf(stderr, "invalid QS1 file, missing palette information\n");
-					exit(EXIT_BADFILE);
-				}
-				c <<= 1;
-				c |= bit;
+			c = bitstream_read_value(stream, 3);
+			if (c < 0) {
+				fprintf(stderr, "invalid QS1 file, missing palette information\n");
+				exit(EXIT_BADFILE);
 			}
 			palette_green[i] = c;
-			c = 0;
-			for (int j = 0 ; j < 3 ; j++) {
-				bit = bitstream_read_bit(stream);
-				if (bit < 0) {
-					fprintf(stderr, "invalid QS1 file, missing palette information\n");
-					exit(EXIT_BADFILE);
-				}
-				c <<= 1;
-				c |= bit;
+			c = bitstream_read_value(stream, 3);
+			if (c < 0) {
+				fprintf(stderr, "invalid QS1 file, missing palette information\n");
+				exit(EXIT_BADFILE);
 			}
 			palette_blue[i] = c;
-			printf(" value %d%d%d\n", palette_red[i], palette_green[i], palette_blue[i]);
+			if (verbosity >= VERB_EXTRA) {
+				printf(" value %d%d%d\n", palette_red[i], palette_green[i], palette_blue[i]);
+			}
 		} else {
 			palette_red[i] = palette_green[i] = palette_blue[i] = 0;
-			printf("\n");
+			if (verbosity >= VERB_EXTRA) {
+				printf("\n");
+			}
 		}
 	}
 }
