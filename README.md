@@ -299,6 +299,40 @@ higher to lower frequency.
 
 # Design notes
 
+## Preprocessing data
+
+### Delta
+
+-1D
+-2D
+
+-none
+-arithmetic
+-overflow arithmetic
+-exclusive or
+
+### Pixel ordering
+
+-pixels horizontally
+-pixels vertically
+-pixels Hilbert
+-text horizontally
+-text vertically
+-text Hilbert
+
+### Transforms
+
+-Burrows-Wheeler
+-move-to-front
+
+### Duplicate elimination
+
+-RLE 4 (i.e. bzip2 conditioning)
+-RLE 0 (i.e. bzip2 post-MTF)
+-Packbits-ish
+-LZ77 family
+-LZ78 family
+
 ## Huffman
 
 ### Minimum number of symbols

@@ -17,111 +17,44 @@
 
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-#include "qs_internal.h"
-
-#include "../bitstream.h"
-#include "../debug.h"
-#include "../exitcodes.h"
+#include "palette.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void process_qs1(bitstream *const stream) {
-	int palette_present[16];
-	unsigned char palette_red[16], palette_green[16], palette_blue[16];
-	int bit;
+palette* palette_construct_from_qs1(bitstream *const stream) {
+	palette* that;
+	that = calloc(1, sizeof(palette));
+	for (int i = 0; i < 16; i++) {
+		that -> used[i] = bitstream_read_bit(stream);
+		that -> present[i] = (that -> used[i] || (i == 0));
+		if (i == 0 || that -> present[i]) {
+			that -> red[i] = bitstream_read_value(stream, 3);
+			that -> green[i] = bitstream_read_value(stream, 3);
+			that -> blue[i] = bitstream_read_value(stream, 3);
+		}
+	}
+	return that;
+}
 
-	for (int i = 0; i < 16; i++) {
-		bit = bitstream_read_bit(stream);
-		if (bit < 0) {
-			fprintf(stderr, "invalid QS1 file, missing palette information\n");
-			exit(EXIT_BADFILE);
-		}
-		palette_present[i] = bit;
-		if (verbosity >= VERB_EXTRA) {
-			printf("QS1: color %d %spresent", i, bit ? "" : "not ");
-		}
-		if (i == 0 || bit) {
-			long c;
-			c = bitstream_read_value(stream, 3);
-			if (c < 0) {
-				fprintf(stderr, "invalid QS1 file, missing palette information\n");
-				exit(EXIT_BADFILE);
-			}
-			palette_red[i] = c;
-			c = bitstream_read_value(stream, 3);
-			if (c < 0) {
-				fprintf(stderr, "invalid QS1 file, missing palette information\n");
-				exit(EXIT_BADFILE);
-			}
-			palette_green[i] = c;
-			c = bitstream_read_value(stream, 3);
-			if (c < 0) {
-				fprintf(stderr, "invalid QS1 file, missing palette information\n");
-				exit(EXIT_BADFILE);
-			}
-			palette_blue[i] = c;
-			if (verbosity >= VERB_EXTRA) {
-				printf(" value %d%d%d\n", palette_red[i], palette_green[i], palette_blue[i]);
-			}
-		} else {
-			palette_red[i] = palette_green[i] = palette_blue[i] = 0;
-			if (verbosity >= VERB_EXTRA) {
-				printf("\n");
-			}
-		}
+void palette_log(palette const *const that) {
+	printf("Palette type: ");
+	switch(that -> type) {
+		case PALETTE_RGB:
+			printf("RGB");
+			break;
+		default:
+			printf("Unknown");
+			break;
 	}
-	long numcolors = 0;
-	for (int i = 0; i < 16; i++) {
-		if (palette_present[i]) {
-			numcolors++;
-		}
+	printf("\n");
+
+	printf("Palette has %d colors", that -> num_colors);
+	if (that -> type == PALETTE_RGB) {
+		printf(", %d bits per component", that -> bit_depth);
 	}
-	if (verbosity >= VERB_EXTRA) {
-		printf("QS1: image has %ld colors\n", numcolors);
-	}
-	bit = bitstream_read_bit(stream);
-	if (bit < 0) {
-		fprintf(stderr, "invalid QS1 file, missing LZ2 type information\n");
-		exit(EXIT_BADFILE);
-	}
-	if (verbosity >= VERB_EXTRA) {
-		if (bit == 0) {
-			printf("QS1: LZ78 format (alternate back-references and literal symbols)\n");
-		} else {
-			printf("QS1: LZW format (pre-initialized dictionary, only back-references)\n");
-		}
-	}
-	int fulldict = bitstream_read_value(stream, 2);
-	if (fulldict < 0) {
-		fprintf(stderr, "invalid QS1 file, missing LZ2 full-dictionary information\n");
-		exit(EXIT_BADFILE);
-	}
-	if (fulldict >= 3) {
-		bit = bitstream_read_bit(stream);
-		if (bit < 0) {
-			fprintf(stderr, "invalid QS1 file, incomplete LZ2 full-dictionary information\n");
-			exit(EXIT_BADFILE);
-		}
-		fulldict += bit;
-	}
-	if (verbosity >= VERB_EXTRA) {
-		switch (fulldict) {
-			case 0:
-				printf("QS1: remove LRU entry on full dictionary\n");
-				break;
-			case 1:
-				printf("QS1: remove one leaf entry, round-robin\n");
-				break;
-			case 2:
-				printf("QS1: remove all leaf entries\n");
-				break;
-			case 3:
-				printf("QS1: clear entire dictionary\n");
-				break;
-			case 4:
-				printf("QS1: keep dictionary full (explicit clear command)\n");
-				break;
-		}
+	printf("\n");
+
+	for (int i = 0; i < that -> num_colors; i++) {
 	}
 }

@@ -20,6 +20,8 @@
 #ifndef PALETTE_H_INCLUDED
 #define PALETTE_H_INCLUDED
 
+#include "../bitstream.h"
+
 typedef enum {
 	PALETTE_RGB = 0,
 	PALETTE_RGB_EHB = 1,
@@ -54,14 +56,26 @@ typedef enum {
 // SAM COUPE?
 
 typedef struct palette {
-	int type;
+	palette_type type;
 	int num_colors;
 	int bit_depth;
+	unsigned char present[256];
+	unsigned char used[256];
 	unsigned char red[256];
 	unsigned char green[256];
 	unsigned char blue[256];
+	unsigned char modifier[256];
+	unsigned char palette_present;
+	unsigned char border_red;
+	unsigned char border_green;
+	unsigned char border_blue;
+	unsigned char border_modifier;
 } palette;
 
-void process_qs1(bitstream *const stream);
+palette* palette_read_from_qs1(bitstream *const stream);
+
+void palette_write_to_qs1(palette const *const that, bitstream *const stream);
+
+void palette_log(palette const *const that);
 
 #endif /* PALETTE_H_INCLUDED */

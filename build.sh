@@ -60,6 +60,7 @@ bitstream.c \
 \
 degas.c \
 \
+sqz_formats/palette.c \
 sqz_formats/qs.c \
 \
 huffman.c \
