@@ -56,5 +56,16 @@ void palette_log(palette const *const that) {
 	printf("\n");
 
 	for (int i = 0; i < that -> num_colors; i++) {
+		if (that -> present[i] || that -> used[i]) {
+			printf("Color %d", i);
+			if (that -> present[i]) {
+				if (that -> bit_depth < 4) {
+					printf(" (%1x%1x%1x)", that -> red[i], that -> green[i], that -> blue[i]);
+				} else {
+					printf(" (%02x%02x%02x)", that -> red[i], that -> green[i], that -> blue[i]);
+				}
+			}
+			printf("\n");
+		}
 	}
 }
