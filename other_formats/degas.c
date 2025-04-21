@@ -137,3 +137,16 @@ struct image* read_pi1(char* filename) {
 
 	return ret;
 }
+
+void write_pi1(struct image const *const img, char const *const filename) {
+	unsigned char* rawbits = malloc(32034);
+	memset(rawbits, 0, 32034);
+	for (int c = 0; c < 16; c++) {
+		rawbits[2 * c + 2] = img -> red[c];
+		rawbits[2 * c + 3] = (img -> green[c] << 4) | img -> blue[c];
+	}
+	FILE* file = fopen(filename, "wb");
+	fwrite(rawbits, 1, 32034, file);
+	fclose(file);
+	free(rawbits);
+}

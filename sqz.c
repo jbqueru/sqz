@@ -42,6 +42,12 @@ int main(int argc, char** argv) {
 	}
 
 	image_log(img);
+
+	if (cmdline_outputfilename) {
+		write_pi1(img, cmdline_outputfilename);
+	}
+	image_destruct(img);
+
 /*
 	lz78encoder* lz78 = lz78encoder_construct();
 	lz78encoder_compute_symbol_range(lz78, pixels, 64000);

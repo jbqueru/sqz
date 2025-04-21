@@ -24,4 +24,6 @@
 
 struct image* read_pi1(char* filename);
 
+void write_pi1(struct image const *const img, char const *const filename);
+
 #endif /* DEGAS_H_INCLUDED */
