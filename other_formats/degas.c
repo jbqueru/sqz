@@ -72,12 +72,12 @@ struct image* read_pi1(char* filename) {
 		fprintf(stderr, "Invalid PI1 file: wrong header.\n");
 	}
 
-	ret = malloc(sizeof *ret);
+	ret = malloc(sizeof(struct image));
 	if (!ret) {
 		fprintf(stderr, FL "Couldn't allocate memory for image structure.\n");
 		exit(EXIT_MEMORY);
 	}
-	memset(rawbits, 0, 32034);
+	memset(ret, 0, sizeof(struct image));
 
 	ret -> width = 320;
 	ret -> height = 200;
@@ -87,16 +87,22 @@ struct image* read_pi1(char* filename) {
 	ret -> separate_border = 0;
 
 	ret -> pixels = malloc(64000);
-	if (!ret) {
+	if (!ret -> pixels) {
 		fprintf(stderr, FL "Couldn't allocate memory for pixels.\n");
 		exit(EXIT_MEMORY);
 	}
+	memset(ret -> pixels, 0, 64000);
 
 	for (int y = 0; y < 200; y++) {
 		for (int x = 0; x < 320; x++) {
 			for (int b = 0; b < 4; b++) {
-				if (rawbits[(x / 16) * 8 + (x % 16 / 8) + 160 * y + b * 2] & (0x80 >> (x % 8))) {
+				if (rawbits[(x / 16) * 8 + (x % 16 / 8) + 160 * y + b * 2 + 34] & (0x80 >> (x % 8))) {
 					ret -> pixels[x + 320 * y] |= (1 << b);
+				}
+			}
+			if (verbosity >= VERB_EXTRA) {
+				if (!ret -> color_used[ret -> pixels[x + 320 * y]]) {
+					printf("Found pixel with color %d\n", ret -> pixels[x + 320 * y]);
 				}
 			}
 			ret -> color_used[ret -> pixels[x + 320 * y]] = 1;

@@ -39,6 +39,7 @@ exitcodes.c \
 license.c \
 \
 bitstream.c \
+image.c \
 \
 other_formats/degas.c \
 \

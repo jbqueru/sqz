@@ -98,4 +98,8 @@ struct image {
 	unsigned char* pixels;
 };
 
+void image_destruct(struct image *const that);
+
+void image_log(struct image const *const that);
+
 #endif /* IMAGE_H_INCLUDED */

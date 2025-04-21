@@ -41,10 +41,13 @@ int main(int argc, char** argv) {
 		pixels[i] = img->pixels[i];
 	}
 
+	image_log(img);
+/*
 	lz78encoder* lz78 = lz78encoder_construct();
 	lz78encoder_compute_symbol_range(lz78, pixels, 64000);
 	lz78encoder_find_matches(lz78, pixels, 64000);
 	lz78encoder_destruct(lz78);
+*/
 
 /*
 	huffman* h = huffman_construct();
