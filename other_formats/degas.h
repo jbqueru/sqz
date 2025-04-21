@@ -20,6 +20,8 @@
 #ifndef DEGAS_H_INCLUDED
 #define DEGAS_H_INCLUDED
 
-long* read_pi1(char* filename);
+#include "../image.h"
+
+struct image* read_pi1(char* filename);
 
 #endif /* DEGAS_H_INCLUDED */

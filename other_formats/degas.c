@@ -21,34 +21,44 @@
 
 #include "../debug.h"
 #include "../exitcodes.h"
+#include "../image.h"
 
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-long* read_pi1(char* filename) {
-	char* rawbits = NULL;
-	long* pixels = NULL;
+struct image* read_pi1(char* filename) {
 	FILE* file = NULL;
+	char* rawbits = NULL;
+	struct image* ret = NULL;
 
-	rawbits = malloc(32000);
+	rawbits = malloc(32034);
 	if (!rawbits) {
 		fprintf(stderr, FL "Couldn't allocate memory for raw PI1 bits.\n");
 		exit(EXIT_MEMORY);
 	}
-	memset(rawbits, 0, 32000);
+	memset(rawbits, 0, 32034);
 
 	file = fopen(filename, "rb");
 	if (!file) {
 		fprintf(stderr, FL "Couldn't open file for reading.\n");
 		exit(EXIT_INPUTFILE);
 	}
-	if (fseek(file, 34, SEEK_SET)) {
-		fprintf(stderr, FL "Couldn't seek to pixel data in input file.\n");
+	if (fseek(file, 0, SEEK_END)) {
+	    fprintf(stderr, FL "Couldn't seek to end of input file.\n");
+	    exit(EXIT_INPUTFILE);
+	}
+	if (ftell(file) != 32034 && ftell(file) != 32068) {
+		fprintf(stderr, "Invalid PI1 file: wrong size.\n");
+		exit(EXIT_BADFILE);
+	}
+	if (fseek(file, 0, SEEK_SET)) {
+		fprintf(stderr, FL "Couldn't seek back start of input file.\n");
 		exit(EXIT_INPUTFILE);
 	}
-	if (fread(rawbits, 1, 32000, file) < 32000) {
+
+	if (fread(rawbits, 1, 32034, file) < 32034) {
 		fprintf(stderr, FL "Couldn't read pixel data from input file.\n");
 		exit(EXIT_INPUTFILE);
 	}
@@ -58,27 +68,43 @@ long* read_pi1(char* filename) {
 	}
 	file = NULL;
 
-	pixels = malloc(64000 * sizeof(long));
-	if (!pixels) {
-		fprintf(stderr, FL "Couldn't allocate memory for decoded pixels.\n");
+	if (rawbits[0] != 0 || rawbits[1] != 0) {
+		fprintf(stderr, "Invalid PI1 file: wrong header.\n");
+	}
+
+	ret = malloc(sizeof *ret);
+	if (!ret) {
+		fprintf(stderr, FL "Couldn't allocate memory for image structure.\n");
 		exit(EXIT_MEMORY);
 	}
-	memset(pixels, 0, 64000 * sizeof(long));
+	memset(rawbits, 0, 32034);
+
+	ret -> width = 320;
+	ret -> height = 200;
+	ret -> par = PAR_SQUARE;
+	ret -> bpp = 4;
+	ret -> palette = PAL_RGB3;
+	ret -> lookup = LOOKUP_FULL;
+	ret -> separate_border = 0;
+
+	ret -> pixels = malloc(64000);
+	if (!ret) {
+		fprintf(stderr, FL "Couldn't allocate memory for pixels.\n");
+		exit(EXIT_MEMORY);
+	}
 
 	for (int y = 0; y < 200; y++) {
 		for (int x = 0; x < 320; x++) {
-			long c = 0;
 			for (int b = 0; b < 4; b++) {
 				if (rawbits[(x / 16) * 8 + (x % 16 / 8) + 160 * y + b * 2] & (0x80 >> (x % 8))) {
-					c |= (1L << b);
+					ret -> pixels[x + 320 * y] |= (1 << b);
 				}
 			}
-			pixels[x + 320 * y] = c;
 		}
 	}
 
 	free(rawbits);
 	rawbits = NULL;
 
-	return pixels;
+	return ret;
 }

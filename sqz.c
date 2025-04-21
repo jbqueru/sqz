@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "exitcodes.h"
 #include "huffman.h"
+#include "image.h"
 #include "lz78.h"
 
 #include "other_formats/degas.h"
@@ -33,8 +34,12 @@
 
 int main(int argc, char** argv) {
 	parse_cmdline(argc, argv);
-	long* pixels = NULL;
-	pixels = read_pi1(cmdline_inputfilename);
+	struct image* img = read_pi1(cmdline_inputfilename);
+
+	long* pixels = malloc(64000 * sizeof(long));
+	for (int i = 0; i < 64000; i++) {
+		pixels[i] = img->pixels[i];
+	}
 
 	lz78encoder* lz78 = lz78encoder_construct();
 	lz78encoder_compute_symbol_range(lz78, pixels, 64000);
