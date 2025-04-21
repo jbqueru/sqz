@@ -83,7 +83,6 @@ struct image* read_pi1(char* filename) {
 	ret -> height = 200;
 	ret -> par = PAR_SQUARE;
 	ret -> bpp = 4;
-	ret -> palette = PAL_RGB3;
 	ret -> lookup = LOOKUP_FULL;
 	ret -> separate_border = 0;
 
@@ -100,9 +99,33 @@ struct image* read_pi1(char* filename) {
 					ret -> pixels[x + 320 * y] |= (1 << b);
 				}
 			}
+			ret -> color_used[ret -> pixels[x + 320 * y]] = 1;
 		}
 	}
 
+	ret -> palette = PAL_RGB3;
+	for (int c = 0; c < 16; c++) {
+		if (c != 0 && ret -> color_used[c] == 0) {
+			continue;
+		}
+		if ((rawbits[2 * c + 2] & 0x08) || (rawbits[2 * c + 3] & 0x88)) {
+			ret -> palette = PAL_RGB4;
+		}
+	}
+	for (int c = 0; c < 16; c++) {
+		if (c != 0 && ret -> color_used[c] == 0) {
+			continue;
+		}
+		if (ret -> palette == PAL_RGB3) {
+			ret -> red[c] = rawbits[2 * c + 2] & 0x07;
+			ret -> green[c] = (rawbits[2 * c + 3] & 0x70) >> 4;
+			ret -> blue[c] = rawbits[2 * c + 3] & 0x07;
+		} else {
+			ret -> red[c] = ((rawbits[2 * c + 2] & 0x07) << 1) | ((rawbits[2 * c + 2] & 0x08) >> 3);
+			ret -> green[c] = ((rawbits[2 * c + 3] & 0x70) >> 3) | ((rawbits[2 * c + 3] & 0x80) >> 7);
+			ret -> blue[c] = ((rawbits[2 * c + 3] & 0x07) << 1) | ((rawbits[2 * c + 3] & 0x08) >> 3);
+		}
+	}
 	free(rawbits);
 	rawbits = NULL;
 
