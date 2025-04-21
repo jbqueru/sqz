@@ -40,7 +40,7 @@ license.c \
 \
 bitstream.c \
 \
-degas.c \
+other_formats/degas.c \
 \
 huffman.c \
 lz78.c \
@@ -59,7 +59,7 @@ license.c \
 bitstream.c \
 image.c \
 \
-degas.c \
+other_formats/degas.c \
 \
 sqz_formats/palette.c \
 sqz_formats/qs.c \

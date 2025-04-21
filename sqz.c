@@ -20,10 +20,11 @@
 #include "bitstream.h"
 #include "cmdline.h"
 #include "debug.h"
-#include "degas.h"
 #include "exitcodes.h"
 #include "huffman.h"
 #include "lz78.h"
+
+#include "other_formats/degas.h"
 
 #include <limits.h>
 #include <stdio.h>

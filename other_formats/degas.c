@@ -19,8 +19,8 @@
 
 #include "degas.h"
 
-#include "debug.h"
-#include "exitcodes.h"
+#include "../debug.h"
+#include "../exitcodes.h"
 
 #include <limits.h>
 #include <stdio.h>
