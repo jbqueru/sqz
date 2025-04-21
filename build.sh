@@ -57,6 +57,7 @@ exitcodes.c \
 license.c \
 \
 bitstream.c \
+image.c \
 \
 degas.c \
 \
