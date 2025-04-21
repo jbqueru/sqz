@@ -61,7 +61,6 @@ image.c \
 \
 other_formats/degas.c \
 \
-sqz_formats/palette.c \
 sqz_formats/qs.c \
 \
 huffman.c \
