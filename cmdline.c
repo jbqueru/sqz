@@ -136,7 +136,12 @@ void parse_cmdline(int argc, char** argv) {
 	}
 	if (verbosity >= VERB_EXTRA) {
 		printf("input filename : %s\n", cmdline_inputfilename);
-		printf("output filename : %s\n", cmdline_outputfilename);
+		if (cmdline_outputfilename) {
+			printf("output filename : %s\n", cmdline_outputfilename);
+		} else {
+			printf("no output filename specified\n");
+		}
+		printf("\n");
 	}
 }
 
