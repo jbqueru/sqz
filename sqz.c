@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 
 	if (cmdline_outputfilename) {
 		bitstream* stream = bitstream_construct();
-		write_qs1(img, stream);
+		qs1_write(img, stream);
 		bitstream_dump_to_file(stream, cmdline_outputfilename);
 		bitstream_destruct(stream);
 	}

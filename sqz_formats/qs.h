@@ -23,8 +23,8 @@
 #include "../bitstream.h"
 #include "../image.h"
 
-struct image* read_qs1(bitstream *const stream);
+struct image* qs1_read(bitstream *const stream);
 
-void write_qs1(struct image const *const img, bitstream *const stream);
+void qs1_write(struct image const *const img, bitstream *const stream);
 
 #endif /* SQZQS_H_INCLUDED */

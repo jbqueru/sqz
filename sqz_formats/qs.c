@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct image* read_qs1(bitstream *const stream) {
+struct image* qs1_read(bitstream *const stream) {
 	struct image* ret = malloc(sizeof (struct image));
 	memset(ret, 0, sizeof (struct image));
 	ret -> width = 320;
@@ -56,7 +56,7 @@ struct image* read_qs1(bitstream *const stream) {
 	return ret;
 }
 
-void write_qs1(struct image const *const img, bitstream *const stream) {
+void qs1_write(struct image const *const img, bitstream *const stream) {
 	if (img -> width != 320 || img -> height != 200 || img -> bpp != 4) {
 		fprintf(stderr, "Error, QS1 files must be 320*200*4bpp\n");
 		exit(EXIT_BADFILE);
