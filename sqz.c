@@ -36,13 +36,22 @@
 
 int main(int argc, char** argv) {
 	parse_cmdline(argc, argv);
-	struct image* img = read_pi1(cmdline_inputfilename);
 
+	char* input_extension = strrchr(cmdline_inputfilename, '.');
+	if (!input_extension) {
+		fprintf(stderr, "ERROR: input filename has no extension\n");
+		exit(EXIT_CMDLINE);
+	}
+	if (strcasecmp(input_extension, ".pi1")) {
+	}
+
+	struct image* img = read_pi1(cmdline_inputfilename);
+/*
 	long* pixels = malloc(64000 * sizeof(long));
 	for (int i = 0; i < 64000; i++) {
 		pixels[i] = img->pixels[i];
 	}
-
+*/
 	image_log(img);
 
 	if (cmdline_outputfilename) {
@@ -77,6 +86,8 @@ int main(int argc, char** argv) {
 
 	huffman_destruct(h);
 */
+/*
 	free(pixels);
+*/
 	return EXIT_SUCCESS;
 }
