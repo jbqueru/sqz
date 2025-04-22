@@ -22,6 +22,7 @@
 #include "../bitstream.h"
 #include "../debug.h"
 #include "../exitcodes.h"
+#include "../image.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -124,4 +125,8 @@ void process_qs1(bitstream *const stream) {
 				break;
 		}
 	}
+}
+
+void write_qs1(struct image const *const img, bitstream *const stream) {
+
 }

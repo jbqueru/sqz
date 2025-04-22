@@ -21,6 +21,9 @@
 #define SQZQS_H_INCLUDED
 
 #include "../bitstream.h"
+#include "../image.h"
+
+void write_qs1(struct image const *const img, bitstream *const stream);
 
 void process_qs1(bitstream *const stream);
 
