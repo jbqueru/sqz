@@ -57,6 +57,14 @@ void parse_cmdline(int argc, char** argv) {
 			display_help();
 			exit(EXIT_SUCCESS);
 		}
+		if (!strcmp(argv[i], "--license")) {
+			if (i > 1 || argc > 2) {
+				fprintf(stderr, "--license can't be used with other options\n");
+				exit(EXIT_CMDLINE);
+			}
+			display_full_license();
+			exit(EXIT_SUCCESS);
+		}
 
 		if (!strcmp(argv[i], "--quiet")) {
 			verbosity = VERB_QUIET;

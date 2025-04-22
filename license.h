@@ -22,4 +22,6 @@
 
 void display_license();
 
+void display_full_license();
+
 #endif /* LICENSE_H_INCLUDED */
