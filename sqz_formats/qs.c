@@ -128,5 +128,31 @@ void process_qs1(bitstream *const stream) {
 }
 
 void write_qs1(struct image const *const img, bitstream *const stream) {
-
+	if (img -> width != 320 || img -> height != 200 || img -> bpp != 4) {
+		fprintf(stderr, "Error, QS1 files must be 320*200*4bpp\n");
+		exit(EXIT_BADFILE);
+	}
+	if (img -> par != PAR_SQUARE) {
+		printf("creating QS1 from image with non-square pixels\n");
+	}
+	if (img -> palette != PAL_RGB3 || img -> lookup != LOOKUP_FULL) {
+		fprintf(stderr, "Error: QS1 files must be RGB3 full-lookup\n");
+		exit(EXIT_BADFILE);
+	}
+	if (img -> separate_border) {
+		printf("ignoring border color for QS1 image\n");
+	}
+	for (int c = 0; c < 16; c++) {
+		bitstream_write_bit(stream, img -> color_used[c] != 0);
+	}
+	for (int c = 0; c < 16; c++) {
+		if (c == 0 || img -> color_used[c]) {
+			bitstream_write_value(stream, img -> red[c], 3);
+			bitstream_write_value(stream, img -> green[c], 3);
+			bitstream_write_value(stream, img -> blue[c], 3);
+		}
+	}
+	for (int i = 0; i < 64000; i++) {
+		bitstream_write_value(stream, img -> pixels[i], 4);
+	}
 }

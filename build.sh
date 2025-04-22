@@ -43,6 +43,8 @@ image.c \
 \
 other_formats/degas.c \
 \
+sqz_formats/qs.c \
+\
 huffman.c \
 lz78.c \
 \

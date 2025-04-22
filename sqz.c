@@ -27,6 +27,8 @@
 
 #include "other_formats/degas.h"
 
+#include "sqz_formats/qs.h"
+
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,7 +46,10 @@ int main(int argc, char** argv) {
 	image_log(img);
 
 	if (cmdline_outputfilename) {
-		write_pi1(img, cmdline_outputfilename);
+		bitstream* stream = bitstream_construct();
+		write_qs1(img, stream);
+		bitstream_dump_to_file(stream, cmdline_outputfilename);
+		bitstream_destruct(stream);
 	}
 	image_destruct(img);
 
