@@ -142,8 +142,19 @@ void write_pi1(struct image const *const img, char const *const filename) {
 	unsigned char* rawbits = malloc(32034);
 	memset(rawbits, 0, 32034);
 	for (int c = 0; c < 16; c++) {
-		rawbits[2 * c + 2] = img -> red[c];
-		rawbits[2 * c + 3] = (img -> green[c] << 4) | img -> blue[c];
+		if (c == 0 || img -> color_used[c]) {
+			rawbits[2 * c + 2] = img -> red[c];
+			rawbits[2 * c + 3] = (img -> green[c] << 4) | img -> blue[c];
+		}
+	}
+	for (int y = 0; y < 200; y++) {
+		for (int x = 0; x < 320; x++) {
+			for (int b = 0; b < 4; b++) {
+				if (img -> pixels[x + 320 * y] & (1 << b)) {
+					rawbits[(x / 16) * 8 + (x % 16 / 8) + 160 * y + b * 2 + 34] |= (0x80 >> (x % 8));
+				}
+			}
+		}
 	}
 	FILE* file = fopen(filename, "wb");
 	fwrite(rawbits, 1, 32034, file);
