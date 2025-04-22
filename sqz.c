@@ -41,12 +41,17 @@ int main(int argc, char** argv) {
 	enum filetypes input_type = filetype_from_filename(cmdline_inputfilename);
 
 	struct image* img;
-	switch(input_type) {
+	switch (input_type) {
 		case FILETYPE_PI1:
 			img = pi1_read(cmdline_inputfilename);
 			break;
+		case FILETYPE_QS1:
+			bitstream* stream = bitstream_construct_from_file(cmdline_inputfilename);
+			img = qs1_read(stream);
+			bitstream_destruct(stream);
+			break;
 		default:
-			fprintf(stderr, "ERROR: inpout file type not recognized or not handled\n");
+			fprintf(stderr, "ERROR: input file type not recognized or not handled\n");
 			exit(EXIT_CMDLINE);
 	}
 /*
@@ -58,11 +63,23 @@ int main(int argc, char** argv) {
 	image_log(img);
 
 	if (cmdline_outputfilename) {
-		bitstream* stream = bitstream_construct();
-		qs1_write(img, stream);
-		bitstream_dump_to_file(stream, cmdline_outputfilename);
-		bitstream_destruct(stream);
+		enum filetypes output_type = filetype_from_filename(cmdline_outputfilename);
+		switch (output_type) {
+			case FILETYPE_PI1:
+				pi1_write(img, cmdline_outputfilename);
+				break;
+			case FILETYPE_QS1:
+				bitstream* stream = bitstream_construct();
+				qs1_write(img, stream);
+				bitstream_dump_to_file(stream, cmdline_outputfilename);
+				bitstream_destruct(stream);
+				break;
+			default:
+				fprintf(stderr, "ERROR: output file type not recognized or not handled\n");
+				exit(EXIT_CMDLINE);
+		}
 	}
+
 	image_destruct(img);
 
 /*
