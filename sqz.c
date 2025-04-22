@@ -40,7 +40,15 @@ int main(int argc, char** argv) {
 
 	enum filetypes input_type = filetype_from_filename(cmdline_inputfilename);
 
-	struct image* img = read_pi1(cmdline_inputfilename);
+	struct image* img;
+	switch(input_type) {
+		case FILETYPE_PI1:
+			img = pi1_read(cmdline_inputfilename);
+			break;
+		default:
+			fprintf(stderr, "ERROR: inpout file type not recognized or not handled\n");
+			exit(EXIT_CMDLINE);
+	}
 /*
 	long* pixels = malloc(64000 * sizeof(long));
 	for (int i = 0; i < 64000; i++) {

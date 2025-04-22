@@ -21,9 +21,9 @@
 #define FILETYPES_H_INCLUDED
 
 enum filetypes {
-	FILE_UNKNOWN,
-	FILE_PI1,
-	FILE_QS1,
+	FILETYPE_UNKNOWN = 0,
+	FILETYPE_PI1,
+	FILETYPE_QS1,
 };
 
 enum filetypes filetype_from_filename(char const *const filename);

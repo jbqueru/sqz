@@ -22,8 +22,8 @@
 
 #include "../image.h"
 
-struct image* read_pi1(char* filename);
+struct image* pi1_read(char* filename);
 
-void write_pi1(struct image const *const img, char const *const filename);
+void pi1_write(struct image const *const img, char const *const filename);
 
 #endif /* DEGAS_H_INCLUDED */

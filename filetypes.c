@@ -31,9 +31,9 @@ struct {
 	enum filetypes type;
 } filetype_mapping[] =
 {
-	{ "pi1", FILE_PI1 },
-	{ "qs1", FILE_QS1 },
-	{ NULL, FILE_UNKNOWN }
+	{ "pi1", FILETYPE_PI1 },
+	{ "qs1", FILETYPE_QS1 },
+	{ NULL, FILETYPE_UNKNOWN }
 };
 
 enum filetypes filetype_from_filename(char const *const filename) {
@@ -42,7 +42,7 @@ enum filetypes filetype_from_filename(char const *const filename) {
 		if (verbosity >= VERB_EXTRA) {
 			printf("no extension\n");
 		}
-		return FILE_UNKNOWN;
+		return FILETYPE_UNKNOWN;
 	}
 	if (verbosity >= VERB_EXTRA) {
 		printf("found extension %s, ", extension);
@@ -59,5 +59,5 @@ enum filetypes filetype_from_filename(char const *const filename) {
 	if (verbosity >= VERB_EXTRA) {
 		printf("extension not recognized\n");
 	}
-	return FILE_UNKNOWN;
+	return FILETYPE_UNKNOWN;
 }
