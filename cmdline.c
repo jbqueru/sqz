@@ -37,7 +37,7 @@ void parse_cmdline(int argc, char** argv) {
 	if (argc == 1) {
 		display_version();
 		printf("\n");
-		display_help();
+		display_help(argv[0]);
 		exit(EXIT_CMDLINE);
 	}
 	for (int i = 1; i < argc; i++) {
@@ -54,7 +54,7 @@ void parse_cmdline(int argc, char** argv) {
 				fprintf(stderr, "--help can't be used with other options\n");
 				exit(EXIT_CMDLINE);
 			}
-			display_help();
+			display_help(argv[0]);
 			exit(EXIT_SUCCESS);
 		}
 		if (!strcmp(argv[i], "--license")) {
@@ -114,6 +114,7 @@ void parse_cmdline(int argc, char** argv) {
 			fprintf(stderr, "Unrecognized option %s\n", argv[i]);
 			exit(EXIT_CMDLINE);
 		}
+
 		if (cmdline_inputfilename) {
 			fprintf(stderr, "Multiple input filenames found: %s\n", argv[i]);
 			exit(EXIT_CMDLINE);
@@ -147,14 +148,18 @@ void display_version() {
 	display_license();
 }
 
-void display_help() {
+void display_help(char const *const progname) {
+	printf("Usage: %s [options] file [options]\n", progname);
 	printf("Command-line options:\n");
 	printf("--help: print this help message to stdout\n");
 	printf("--version: print version information to stdout\n");
+	printf("--license: print full license to stdout\n");
 	printf("\n");
 	printf("--quiet: suppress all output\n");
 	printf("--verbose: additional output\n");
 	printf("--extraverbose: even more additional output\n");
+	printf("\n");
+	printf("--output <filename>: specify the output file\n");
 	printf("\n");
 	display_help_exitcodes();
 }
