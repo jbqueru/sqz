@@ -67,17 +67,30 @@ void parse_cmdline(int argc, char** argv) {
 		}
 
 		if (!strcmp(argv[i], "--quiet")) {
+			if (verbosity != VERB_NORMAL && verbosity != VERB_QUIET) {
+				fprintf(stderr, "multiple incompatible verbosity commands: %s\n", argv[i]);
+				exit(EXIT_CMDLINE);
+			}
 			verbosity = VERB_QUIET;
 			continue;
 		}
 		if (!strcmp(argv[i], "--verbose")) {
+			if (verbosity != VERB_NORMAL && verbosity != VERB_VERBOSE) {
+				fprintf(stderr, "multiple incompatible verbosity commands: %s\n", argv[i]);
+				exit(EXIT_CMDLINE);
+			}
 			verbosity = VERB_VERBOSE;
 			continue;
 		}
 		if (!strcmp(argv[i], "--extraverbose")) {
+			if (verbosity != VERB_NORMAL && verbosity != VERB_EXTRA) {
+				fprintf(stderr, "multiple incompatible verbosity commands: %s\n", argv[i]);
+				exit(EXIT_CMDLINE);
+			}
 			verbosity = VERB_EXTRA;
 			continue;
 		}
+
 		if (!strcmp(argv[i], "--output")) {
 			i++;
 			if (i >= argc) {
