@@ -23,6 +23,8 @@
 #include "exitcodes.h"
 #include "ucmdline.h"
 
+#include "other_formats/degas.h"
+
 #include "sqz_formats/qs.h"
 
 // public headers (in alphabetical order)
@@ -33,14 +35,20 @@ int main(int argc, char** argv) {
 	parse_cmdline(argc, argv);
 
 	bitstream* stream = bitstream_construct_from_file(cmdline_inputfilename);
+	struct image* img = NULL;
 
 	switch(cmdline_compressed_format) {
 		case FORMAT_QS1:
-			process_qs1(stream);
+			img = read_qs1(stream);
 			break;
 		default:
 			fprintf(stderr, FL "no handler for format %d\n", (int)cmdline_compressed_format);
 			exit(EXIT_IMPLEMENTATION);
 	}
+
+	if (cmdline_outputfilename) {
+		write_pi1(img, cmdline_outputfilename);
+	}
+
 	return EXIT_SUCCESS;
 }
