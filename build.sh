@@ -36,6 +36,7 @@ sqz.c \
 cmdline.c \
 debug.c \
 exitcodes.c \
+filetypes.c \
 license.c \
 \
 bitstream.c \

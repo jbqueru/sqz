@@ -21,6 +21,7 @@
 #include "cmdline.h"
 #include "debug.h"
 #include "exitcodes.h"
+#include "filetypes.h"
 #include "huffman.h"
 #include "image.h"
 #include "lz78.h"
@@ -37,13 +38,7 @@
 int main(int argc, char** argv) {
 	parse_cmdline(argc, argv);
 
-	char* input_extension = strrchr(cmdline_inputfilename, '.');
-	if (!input_extension) {
-		fprintf(stderr, "ERROR: input filename has no extension\n");
-		exit(EXIT_CMDLINE);
-	}
-	if (strcasecmp(input_extension, ".pi1")) {
-	}
+	enum filetypes input_type = filetype_from_filename(cmdline_inputfilename);
 
 	struct image* img = read_pi1(cmdline_inputfilename);
 /*
