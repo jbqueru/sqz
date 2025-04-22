@@ -50,29 +50,4 @@ lz78.c \
 \
 -O2 -Wall -Wextra -o out/bin/sqz || exit $?
 
-echo '(*) build Unsqueezer tool'
-gcc \
-unsqz.c \
-\
-ucmdline.c \
-debug.c \
-exitcodes.c \
-license.c \
-\
-bitstream.c \
-image.c \
-\
-other_formats/degas.c \
-\
-sqz_formats/qs.c \
-\
-huffman.c \
-lz78.c \
-\
--O2 -Wall -Wextra -o out/bin/unsqz || exit $?
-
-
-#echo '(*) run Squeezer tool'
-#out/bin/sqz out/tos/VMAX.PI1 || exit $?
-
 echo '(*) BUILD SUCCESSFUL'
