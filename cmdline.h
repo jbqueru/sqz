@@ -21,10 +21,10 @@
 #define CMDLINE_H_INCLUDED
 
 enum delta {
-	DELTA_UNSPECIFIED = 0,
-    DELTA_ANY,
-    DELTA_NONE,
-    DELTA_ARITHMETIC_1D,
+	DELTA_UNSPECIFIED = 0,	// hasn't been seen
+    DELTA_ANY,				// explicitly wants all variants investigated
+    DELTA_NONE,				// explicit variant
+    DELTA_ARITHMETIC_1D,	// explicit variant
     DELTA_ARITHMETIC_2D,
     DELTA_WRAP_1D,
     DELTA_WRAP_2D,

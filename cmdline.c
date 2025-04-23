@@ -110,6 +110,15 @@ void parse_cmdline(int argc, char** argv) {
 			}
 		}
 
+		if (!strcmp(argv[i], "--delta")) {
+			i++;
+			if (i >= argc) {
+				fprintf(stderr, "--delta specified without filename\n");
+				exit(EXIT_CMDLINE);
+			}
+		}
+
+
 		if (argv[i][0] == '-') {
 			fprintf(stderr, "Unrecognized option %s\n", argv[i]);
 			exit(EXIT_CMDLINE);
